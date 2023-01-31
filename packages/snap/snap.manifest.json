@@ -18,7 +18,16 @@
     }
   },
   "initialPermissions": {
-    "snap_confirm": {}
+    "snap_confirm": {},
+    "endowment:transaction-insight": {},
+    "endowment:network-access": {},
+    "snap_notify": {},
+    "snap_getBip32Entropy": [
+      {
+        "path": ["m", "44'", "3'"],
+        "curve": "secp256k1"
+      }
+    ]
   },
   "manifestVersion": "0.1"
 }

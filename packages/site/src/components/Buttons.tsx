@@ -98,6 +98,22 @@ export const SendHelloButton = (props: ComponentProps<typeof Button>) => {
   return <Button {...props}>Send message</Button>;
 };
 
+export const SendAccountBalanceButton = (props: ComponentProps<typeof Button>) => {
+  return <Button {...props}>Get Balance</Button>;
+};
+
+export const SendTransactionButton = (props: ComponentProps<typeof Button>) => {
+  return <Button {...props}>Transfer</Button>;
+};
+
+export const SendTransactionSignButton = (props: ComponentProps<typeof Button>) => {
+  return <Button {...props}>Sign Transaction</Button>;
+};
+
+export const SendBroadcastButton = (props: ComponentProps<typeof Button>) => {
+  return <Button {...props}>Broadcast Transaction</Button>;
+};
+
 export const HeaderButtons = ({
   state,
   onConnectClick,

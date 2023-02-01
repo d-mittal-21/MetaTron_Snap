@@ -5,6 +5,11 @@ import {
   connectSnap,
   getSnap,
   sendHello,
+  sendAccountBalance,
+  sendBroadcast,
+  sendNewAccount,
+  sendTransaction,
+  sendTransactionSign,
   shouldDisplayReconnectButton,
 } from '../utils';
 import {
@@ -12,6 +17,10 @@ import {
   InstallFlaskButton,
   ReconnectButton,
   SendHelloButton,
+  SendTransactionButton,
+  SendTransactionSignButton,
+  SendAccountBalanceButton,
+  SendBroadcastButton,
   Card,
 } from '../components';
 
@@ -101,6 +110,8 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
+  const [num, setNum] = useState<number | undefined>();
+  const [string, setString] = useState<string | undefined>();
 
   const handleConnectClick = async () => {
     try {
@@ -126,13 +137,64 @@ const Index = () => {
     }
   };
 
+  const handleSendAccountBalanceClick = async () => {
+    try {
+      const response = await sendAccountBalance() as { Balance: number };
+      console.log(response);
+      setNum(response.Balance)
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const handleSendTransactionClick = async () => {
+    try {
+      const response = window.ethereum.request({
+        method: 'wallet_invokeSnap',
+        params:  {
+          defaultSnapOrigin,
+          {
+            method: 'CreateTransaction',
+            params: {
+              ToAddress,
+            }
+          },
+        },
+      }) as {accountAddress : string}
+      console.log(response)
+      setString(response?.accountAddress);
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const handleSendTransactionSignClick = async () => {
+    try {
+      await sendTransactionSign();
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const handleSendBroadcastClick = async () => {
+    try {
+      await sendBroadcast();
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
   return (
     <Container>
       <Heading>
-        Welcome to <Span>template-snap</Span>
+        Welcome to <Span>Tron Metamask Integration</Span>
       </Heading>
       <Subtitle>
-        Get started by editing <code>src/index.ts</code>
+        Get started by using different functions available for making transactions
       </Subtitle>
       <CardContainer>
         {state.error && (
@@ -202,6 +264,86 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
+        <Card
+          content={{
+            title: 'Get Current Acount Balance',
+            description:
+              'Display your balance in account',
+            button: (
+              <SendHelloButton
+                onClick={handleSendAccountBalanceClick}
+                disabled={!state.installedSnap}
+              />
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            state.isFlask &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
+        <Card
+          content={{
+            title: 'Make a Transaction',
+            description:
+              'Transfer your Tron Token to another account',
+            button: (
+              <SendTransactionButton
+                onClick={handleSendTransactionClick}
+                disabled={!state.installedSnap}
+              />
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            state.isFlask &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
+        <Card
+          content={{
+            title: 'Sign your Transaction',
+            description:
+              'Sign the transaction to prove who you are',
+            button: (
+              <SendTransactionSignButton
+                onClick={handleSendTransactionSignClick}
+                disabled={!state.installedSnap}
+              />
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            state.isFlask &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
+        <Card
+          content={{
+            title: 'Broadcast your Transaction',
+            description:
+              'Send your transaction to the blockchain',
+            button: (
+              <SendBroadcastButton
+                onClick={handleSendBroadcastClick}
+                disabled={!state.installedSnap}
+              />
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            state.isFlask &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
+        <div>
+          {num && <div>{num}</div>}
+          {string && <div>{string}</div>}
+        </div>
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}

@@ -1,8 +1,8 @@
 import { OnRpcRequestHandler } from '@metamask/snap-types';
-import { SLIP10Node } from '@metamask/key-tree';
+import { JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
 import { fetchUrl } from './insights';
-const TronWeb = require('tronweb');
+// const TronWeb = require('tronweb');
 
 const APIKEY = '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7';
 const HEADER: any = { 'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json' }
@@ -19,43 +19,50 @@ const Amount: any = 5;
 const DevAddress = 'TCmj2ALymCKAANLNYLrdu6r4rf9Qw8fGRL';
 const Url = "https://api.shasta.trongrid.io/wallet/easytransferbyprivate" // tron api for EasyTransferByPrivate
 
-const TronNode = await wallet.request({
-  method: 'snap_getBip32Entropy',
-  params: {
-    // Must be specified exactly in the manifest
-    path: ['m', "44'", "195'"],
-    curve: 'secp256k1',
-  },
-});
+let PrivateKey:string = "";
+let PublicKey:string = "";
+let Address:string = "";
+const foo = async () => {
+  const TronNode : any = await wallet.request({
+    method: 'snap_getBip32Entropy',
+    params: {
+      // Must be specified exactly in the manifest
+      path: ['m', "44'", "195'"],
+      curve: 'secp256k1',
+    },
+  });
+  const TronSlip10Node = await SLIP10Node.fromJSON(TronNode);
+  PublicKey = (await TronSlip10Node.derive(["bip32:0'"])).publicKey;
+  PrivateKey = (await TronSlip10Node.derive(["bip32:0'"])).privateKey as string;
+  Address = (await TronSlip10Node.derive(["bip32:0'"])).address as string;
+}
 
-const TronSlip10Node = await SLIP10Node.fromJSON(TronNode);
-const PrivateKey = await TronSlip10Node.derive(["bip32:3'"]);
-const PublicKey = await TronSlip10Node.derive(["bip32:4"]);
 
-const tronWeb = new TronWeb({
-  fullHost: 'https://api.trongrid.io',
-  headers: { "TRON-PRO-API-KEY": APIKEY },
-  privateKey: PrivateKey
-})
 
-const GetNewAddressHash = async () => {
-  var hash = tronWeb.sha3(PublicKey);
-  hash = hash.slice(-20);
-  let hexHash = '';
-  for (let i = 0; i < str.length; i++) {
-    hexHash += str.charCodeAt(i).toString(16);
-  }
-  hexHash = '0x41' + hexHash;
-  var hashOfHash = tronWeb.sha3(hexHash,{encoding:'hex'})
-  hashOfHash = tronWeb.sha3(hexHash,{encoding:'hex'})
-  const verificationCode = hashofHash.slice(4)
-} 
+// const tronWeb = new TronWeb({
+//   fullHost: 'https://api.trongrid.io',
+//   headers: { "TRON-PRO-API-KEY": APIKEY },
+//   privateKey: PrivateKey
+// })
 
-// const options = {
-//   method: 'POST',
-//   headers: {'TRON-PRO-API-KEY': '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7', accept: 'application/json', 'content-type': 'application/json'},
-//   body: JSON.stringify({UserPrivateKey: PrivateKey, toAddress: 'string', amount: 0})
-// };
+// const GetNewAddressHash = async () => {
+//   var hash = tronWeb.sha3(PublicKey);
+//   hash = hash.slice(-20);
+//   let hexHash = '';
+//   for (let i = 0; i < hash.length; i++) {
+//     hexHash += hash.charCodeAt(i).toString(16);
+//   }
+//   hexHash = '0x41' + hexHash;
+//   var hashOfHash = tronWeb.sha3(hexHash,{encoding:'hex'})
+//   hashOfHash = tronWeb.sha3(hexHash,{encoding:'hex'})
+//   const verificationCode = hashOfHash.slice(4)
+// } 
+
+const options = {
+  method: 'POST',
+  headers: {'TRON-PRO-API-KEY': '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7', accept: 'application/json', 'content-type': 'application/json'},
+  body: JSON.stringify({UserPrivateKey: PrivateKey, toAddress: 'string', amount: 0})
+};
 
 const GetLatestBlock = async () => {
   const data: any = await fetch('https://api.shasta.trongrid.io/wallet/getnowblock');
@@ -156,7 +163,7 @@ const TransferTron = async () => {
   return response;
 }
 
-export const getMessage = (originString: string): string =>
+const getMessage = (originString: string): string =>
   `Hello, ${originString}!`;
 
 /**
@@ -171,6 +178,7 @@ export const getMessage = (originString: string): string =>
  * @throws If the `snap_confirm` call failed.
  */
 export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
+  foo();
   switch (request.method) {
     case 'hello':
       return wallet.request({

@@ -1,6 +1,7 @@
-import { useContext } from 'react';
+import { useContext , useState} from 'react';
 import styled from 'styled-components';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
+import { defaultSnapOrigin } from '../config';
 import {
   connectSnap,
   getSnap,
@@ -110,8 +111,8 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
-  const [num, setNum] = useState<number | undefined>();
-  const [string, setString] = useState<string | undefined>();
+  const [num, setNum] = useState();
+  // const [string, setString] = useState<string | undefined>();
 
   const handleConnectClick = async () => {
     try {
@@ -139,9 +140,9 @@ const Index = () => {
 
   const handleSendAccountBalanceClick = async () => {
     try {
-      const response = await sendAccountBalance() as { Balance: number };
-      console.log(response);
-      setNum(response.Balance)
+      const balance = await sendAccountBalance();
+      console.log(balance);
+      setNum(balance)
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -150,20 +151,19 @@ const Index = () => {
 
   const handleSendTransactionClick = async () => {
     try {
-      const response = window.ethereum.request({
+      const response : any = window.ethereum.request({
         method: 'wallet_invokeSnap',
-        params:  {
+        params:  [
           defaultSnapOrigin,
           {
             method: 'CreateTransaction',
             params: {
-              ToAddress,
+              ToAddress : 'TCmj2ALymCKAANLNYLrdu6r4rf9Qw8fGRL'
             }
           },
-        },
-      }) as {accountAddress : string}
+        ],
+      })
       console.log(response)
-      setString(response?.accountAddress);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -270,7 +270,7 @@ const Index = () => {
             description:
               'Display your balance in account',
             button: (
-              <SendHelloButton
+              <SendAccountBalanceButton
                 onClick={handleSendAccountBalanceClick}
                 disabled={!state.installedSnap}
               />
@@ -342,7 +342,7 @@ const Index = () => {
         />
         <div>
           {num && <div>{num}</div>}
-          {string && <div>{string}</div>}
+          {/* {string && <div>{string}</div>} */}
         </div>
         <Notice>
           <p>

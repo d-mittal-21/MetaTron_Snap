@@ -5,7 +5,7 @@ import { fetchUrl } from './insights';
 // const TronWeb = require('tronweb');
 
 const APIKEY = '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7';
-const HEADER: any = { 'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json' }
+const HEADER: any = {"Access-Control-Allow-Origin": "*",'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json'}
 
 /**
  * Get a message from the origin. For demonstration purposes only.
@@ -65,25 +65,31 @@ const options = {
 };
 
 const GetLatestBlock = async () => {
-  const data: any = await fetch('https://api.shasta.trongrid.io/wallet/getnowblock');
+  const data: any = await (await fetch('https://api.shasta.trongrid.io/wallet/getnowblock')).json();
   return { blockID: data.blockID, number: data.block_header.raw_data.number }
 }
 
 const GetAccountBalance = async (OwnerAddress : string) => {
-  const [Hash, Number]: any = await GetLatestBlock();
-  const AccountBalance = await fetch('https://api.shasta.trongrid.io/wallet/getaccountbalance', {
+  console.log('GetAccountBalance', OwnerAddress);
+  const {blockID, number} = await GetLatestBlock();
+  console.log("Fetching Balance")
+  const res = (await fetch('https://api.shasta.trongrid.io/wallet/getaccountbalance', {
     method: 'POST',
     headers: HEADER,
     body: JSON.stringify({
-      account_identifier: `{"address": ${OwnerAddress}},`,
+      account_identifier: {"address": `${OwnerAddress}`},
       block_identifier: {
-        hash: Hash,
-        number: Number
+        hash: blockID,
+        number
       },
       visible: true
     })
-  });
-  return { AccountBalance };
+  }))
+  
+  console.log(res)
+  const data = await res.json();
+  console.log(data)
+  return data['balance'];
 }
 
 const CreateTransaction = async (OwnerAddress: string, ToAddress: string, Amount: Number) => {
@@ -177,7 +183,7 @@ const getMessage = (originString: string): string =>
  * @throws If the request method is not valid for this snap.
  * @throws If the `snap_confirm` call failed.
  */
-export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
+export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) => {
   foo();
   switch (request.method) {
     case 'hello':
@@ -207,19 +213,22 @@ export const onRpcRequest: OnRpcRequestHandler = ({ origin, request }) => {
       //     },
       //   ],
       // })
-      return GetAccountBalance(DevAddress);
+      console.log("Checking GetAccountBalance")
+      const rs = await GetAccountBalance(DevAddress);
+      console.log(rs);
+      return rs;
 
     case 'CreateTransaction':
       const { ToAddress } = request.params as {
         ToAddress: string
       };
-      return CreateTransaction(DevAddress,ToAddress, Amount);
+      return await CreateTransaction(DevAddress,ToAddress, Amount);
 
     case 'SignTransaction':``
-      return GetTransactionSign(CreateTransaction(DevAddress, DevAddress, Amount), PrivateKey);
+      return await GetTransactionSign(CreateTransaction(DevAddress, DevAddress, Amount), PrivateKey);
 
     case 'BroadcastTransaction':
-      return BroadcastTransaction();
+      return await BroadcastTransaction();
 
     case 'createNewAccount':
       return {};

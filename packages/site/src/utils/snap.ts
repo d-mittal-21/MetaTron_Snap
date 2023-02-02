@@ -72,13 +72,13 @@ export const sendHello = async () => {
   });
 };
 
-export const sendAccountBalance = async () => {
-  await window.ethereum.request({
+export const sendAccountBalance : any = async () => {
+  return await window.ethereum.request({
     method: 'wallet_invokeSnap',
     params: [
       defaultSnapOrigin,
       {
-        method: 'GetAccoutBalance',
+        method: 'GetAccountBalance',
       },
     ],
   });

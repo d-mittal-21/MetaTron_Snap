@@ -297,8 +297,8 @@ const Index = () => {
               description:
                 'Transfer your Tron Token to another account',
               button: (
-                <SendTransactionButton type="submit"
-                  // onClick={handleSendTransactionClick}
+                <SendTransactionButton
+                  onClick={handleSendTransactionClick}
                   disabled={!state.installedSnap}
                 />
               ),
@@ -310,8 +310,8 @@ const Index = () => {
               !shouldDisplayReconnectButton(state.installedSnap)
             }
           />
-          Reciever Address: <input type="text" value={inputAddress} onChange={handleInputChange}> </input>
-        </form>
+          {<input type="text" value={inputAddress} onChange={handleInputChange} />}
+          </form>
         <Card
           content={{
             title: 'Sign your Transaction',

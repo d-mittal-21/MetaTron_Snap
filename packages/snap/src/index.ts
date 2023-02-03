@@ -249,8 +249,8 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
       return await BroadcastTransaction();
 
     case 'createNewAccount':
-      const address =  await GetNewAddressHash()
-      return await createNewAccount(address);
+      // const address =  await GetNewAddressHash()
+      return await createNewAccount(Address);
 
     default:
       throw new Error('Method not found.');

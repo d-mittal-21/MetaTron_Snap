@@ -21,6 +21,7 @@ import {
   SendTransactionButton,
   SendTransactionSignButton,
   SendAccountBalanceButton,
+  SendNewAccountButton,
   SendBroadcastButton,
   Card,
 } from '../components';
@@ -195,6 +196,15 @@ const Index = () => {
     }
   };
 
+  const handleSendNewAccountClick = async () => {
+    try {
+      await sendNewAccount();
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
   return (
     <Container>
       <Heading>
@@ -260,6 +270,25 @@ const Index = () => {
             button: (
               <SendHelloButton
                 onClick={handleSendHelloClick}
+                disabled={!state.installedSnap}
+              />
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            state.isFlask &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
+        <Card
+          content={{
+            title: 'New Account',
+            description:
+              'Generate your new account on TRON network',
+            button: (
+              <SendNewAccountButton
+                onClick={handleSendNewAccountClick}
                 disabled={!state.installedSnap}
               />
             ),

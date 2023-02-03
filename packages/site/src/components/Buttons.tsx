@@ -98,6 +98,10 @@ export const SendAccountBalanceButton = (props: ComponentProps<typeof Button>) =
   return <Button {...props}>Get Balance</Button>;
 };
 
+export const SendNewAccountButton = (props: ComponentProps<typeof Button>) => {
+  return <Button {...props}>Create Account</Button>;
+};
+
 export const SendTransactionButton = (props: ComponentProps<typeof Button>) => {
   return <Button {...props}>Transfer</Button>;
 };

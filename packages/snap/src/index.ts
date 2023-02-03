@@ -1,8 +1,8 @@
 import { OnRpcRequestHandler } from '@metamask/snap-types';
 import { JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
-import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
-import { fetchUrl } from './insights';
-const TronWeb = require('tronweb');
+// import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
+// import { fetchUrl } from './insights';
+
 
 const APIKEY = '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7';
 const HEADER: any = {"Access-Control-Allow-Origin": "*",'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json'}
@@ -35,6 +35,24 @@ const foo = async () => {
   PublicKey = (await TronSlip10Node.derive(["bip32:0'"])).publicKey;
   PrivateKey = (await TronSlip10Node.derive(["bip32:0'"])).privateKey as string;
   Address = (await TronSlip10Node.derive(["bip32:0'"])).address as string;
+  console.log(PublicKey);
+  console.log(PrivateKey);
+  console.log(Address);
+  const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  const BASE = BigInt(ALPHABET.length);
+
+  function hexToBase58(hex: string): string {
+    let num = BigInt(hex);
+    let str = '';
+    while (num > 0) {
+      let rem = Number(num % BASE);
+      str = ALPHABET[rem] + str;
+      num = num / BASE;
+    }
+    return str;
+  }
+  Address = hexToBase58(Address);
+  console.log(Address);
 }
 
 
@@ -202,7 +220,6 @@ const getMessage = (originString: string): string =>
  * @throws If the `snap_confirm` call failed.
  */
 export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) => {
-  foo();
   switch (request.method) {
     case 'hello':
       return wallet.request({
@@ -248,8 +265,9 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
     case 'BroadcastTransaction':
       return await BroadcastTransaction();
 
-    case 'createNewAccount':
+    case 'CreateNewAccount':
       // const address =  await GetNewAddressHash()
+      await foo();
       return await createNewAccount(Address);
 
     default:

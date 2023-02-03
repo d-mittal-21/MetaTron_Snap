@@ -1,8 +1,8 @@
-import { OnRpcRequestHandler } from '@metamask/snap-types';
+import { OnRpcRequestHandler } from '@metamask/snaps-types';
 import { JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
 import { fetchUrl } from './insights';
-const TronWeb = require('tronweb');
+// const TronWeb = require('tronweb');
 
 const APIKEY = '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7';
 const HEADER: any = {"Access-Control-Allow-Origin": "*",'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json'}
@@ -35,29 +35,30 @@ const foo = async () => {
   PublicKey = (await TronSlip10Node.derive(["bip32:0'"])).publicKey;
   PrivateKey = (await TronSlip10Node.derive(["bip32:0'"])).privateKey as string;
   Address = (await TronSlip10Node.derive(["bip32:0'"])).address as string;
+  console.log(Address,PrivateKey,PublicKey);
 }
 
 
 
-const tronWeb = new TronWeb({
-  fullHost: 'https://api.trongrid.io',
-  headers: { "TRON-PRO-API-KEY": APIKEY },
-  privateKey: PrivateKey
-})
+// const tronWeb = new TronWeb({
+//   fullHost: 'https://api.trongrid.io',
+//   headers: { "TRON-PRO-API-KEY": APIKEY },
+//   privateKey: PrivateKey
+// })
 
 const GetNewAddressHash = async () => {
-  var hash = tronWeb.sha3(PublicKey);
-  hash = hash.slice(-20);
-  let hexHash = '';
-  for (let i = 0; i < hash.length; i++) {
-    hexHash += hash.charCodeAt(i).toString(16);
-  }
-  hexHash = '0x41' + hexHash;
-  var hashOfHash = tronWeb.sha3(hexHash,{encoding:'hex'});
-  hashOfHash = tronWeb.sha3(hexHash,{encoding:'hex'});
-  const verificationCode = hashOfHash.slice(0,8);
-  var address = hexHash + verificationCode;
-
+  // var hash = tronWeb.sha3(PublicKey);
+  // hash = hash.slice(-20);
+  // let hexHash = '';
+  // for (let i = 0; i < hash.length; i++) {
+  //   hexHash += hash.charCodeAt(i).toString(16);
+  // }
+  // hexHash = '0x41' + hexHash;
+  // var hashOfHash = tronWeb.sha3(hexHash,{encoding:'hex'});
+  // hashOfHash = tronWeb.sha3(hexHash,{encoding:'hex'});
+  // const verificationCode = hashOfHash.slice(0,8);
+  // var address = hexHash + verificationCode;
+  var address = "";
   const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
   const BASE = BigInt(ALPHABET.length);
 
@@ -249,7 +250,8 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
       return await BroadcastTransaction();
 
     case 'createNewAccount':
-      const address =  await GetNewAddressHash()
+      const address =  Address;
+      console.log(address);
       return await createNewAccount(address);
 
     default:

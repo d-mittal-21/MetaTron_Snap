@@ -2,7 +2,8 @@ import { OnRpcRequestHandler } from '@metamask/snap-types';
 import { JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 // import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
 // import { fetchUrl } from './insights';
-
+import { Keccak } from 'sha3';
+import * as bs58 from 'bs58';
 
 const APIKEY = '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7';
 const HEADER: any = {"Access-Control-Allow-Origin": "*",'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json'}
@@ -62,37 +63,66 @@ const foo = async () => {
 //   headers: { "TRON-PRO-API-KEY": APIKEY },
 //   privateKey: PrivateKey
 // })
+const Hash = new Keccak(256);
+const GetNewAddressHash = async () => {
+  Hash.update(PublicKey);
+  var hash = Hash.digest('hex');
+  console.log(hash);
+  hash = hash.slice(-40);
+  console.log(hash)
+  // let hexHash = '';
+  // for (let i = 0; i < hash.length; i++) {
+  //   hexHash += hash.charCodeAt(i).toString(16);
+  // }
+  hash = '0x41' + hash;
+  console.log(hash);
+  Hash.update(hash);
+  var hashOfHash = Hash.digest('hex');
+  Hash.update(hashOfHash);
+  hashOfHash = Hash.digest('hex');
+  const verificationCode = hashOfHash.slice(0,8);
+  var address = hash + verificationCode;
 
-// const GetNewAddressHash = async () => {
-//   var hash = tronWeb.sha3(PublicKey);
-//   hash = hash.slice(-20);
-//   let hexHash = '';
-//   for (let i = 0; i < hash.length; i++) {
-//     hexHash += hash.charCodeAt(i).toString(16);
-//   }
-//   hexHash = '0x41' + hexHash;
-//   var hashOfHash = tronWeb.sha3(hexHash,{encoding:'hex'});
-//   hashOfHash = tronWeb.sha3(hexHash,{encoding:'hex'});
-//   const verificationCode = hashOfHash.slice(0,8);
-//   var address = hexHash + verificationCode;
+  const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  const BASE = BigInt(ALPHABET.length);
 
-//   const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-//   const BASE = BigInt(ALPHABET.length);
+  function hexToBase58(hex: string): string {
+    let num = BigInt(hex);
+    let str = '';
+    while (num > 0) {
+      let rem = Number(num % BASE);
+      str = ALPHABET[rem] + str;
+      num = num / BASE;
+    }
+    return str;
+  }
 
-//   function hexToBase58(hex: string): string {
-//     let num = BigInt("0x" + hex);
-//     let str = '';
-//     while (num > 0) {
-//       let rem = Number(num % BASE);
-//       str = ALPHABET[rem] + str;
-//       num = num / BASE;
-//     }
-//     return str;
-//   }
-//   address = hexToBase58(address);
-//   address = 'T' + address;
-//   return { address }
-// } 
+  function base58ToHex(base58: string): string {
+    let hex = '';
+    let number = BigInt(0);
+  
+    for (const char of base58) {
+      number = number * BASE +  BigInt(ALPHABET.indexOf(char));
+    }
+  
+    while (number > 0) {
+      const remainder = number % BigInt(256);
+      hex = `0${remainder.toString(16)}`.slice(-2) + hex;
+      number = number / BigInt(256);
+    }
+  
+    return hex;
+  }
+  
+
+  const address1 = hexToBase58(address);
+  const address2 = 'T' + address1;
+  const address3 = base58ToHex(address2);
+  console.log(address3)
+  console.log(address2)
+  console.log(address1)
+  return { address3 }
+} 
 
 const options = {
   method: 'POST',
@@ -257,18 +287,19 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
       const { ToAddress } = request.params as {
         ToAddress: string
       };
-      return await CreateTransaction(DevAddress,ToAddress, Amount);
+      return await CreateTransaction(DevAddress,DevAddress, Amount); // changed for testing
 
     case 'SignTransaction':``
-      return await GetTransactionSign(CreateTransaction(DevAddress, DevAddress, Amount), PrivateKey);
+      return await GetTransactionSign(CreateTransaction(DevAddress, DevAddress, Amount), PrivateKey); //changed for testing
 
     case 'BroadcastTransaction':
       return await BroadcastTransaction();
 
     case 'CreateNewAccount':
-      // const address =  await GetNewAddressHash()
       await foo();
-      return await createNewAccount(Address);
+      const address =  await GetNewAddressHash();
+      console.log(address);
+      return await createNewAccount(address);
 
     default:
       throw new Error('Method not found.');

@@ -3,9 +3,11 @@ import { JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 // import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
 // import { fetchUrl } from './insights';
 import {pkToAddress} from './utils'
+import { Keccak } from 'sha3';
+import * as bs58 from 'bs58';
 
 const APIKEY = '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7';
-const HEADER: any = {"Access-Control-Allow-Origin": "*",'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json'}
+const HEADER: any = {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers":"Content-Type, Authorization, X-Requested-With","Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json',}
 
 /**
  * Get a message from the origin. For demonstration purposes only.
@@ -37,6 +39,7 @@ const foo = async () => {
   PrivateKey = (await TronSlip10Node.derive(["bip32:0'"])).privateKey as string;
   Address = (await TronSlip10Node.derive(["bip32:0'"])).address as string;
   console.log(PublicKey);
+  console.log(PublicKey.slice(4));
   console.log(PrivateKey);
   console.log(Address);
   const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
@@ -78,50 +81,65 @@ function base58ToHex(base58: string): string {
 //   headers: { "TRON-PRO-API-KEY": APIKEY },
 //   privateKey: PrivateKey
 // })
-// const Hash = new Keccak(256);
-// const GetNewAddressHash = async () => {
-//   Hash.update(PublicKey);
-//   var hash = Hash.digest('hex');
-//   console.log(hash);
-//   hash = hash.slice(-40);
-//   console.log(hash)
-//   // let hexHash = '';
-//   // for (let i = 0; i < hash.length; i++) {
-//   //   hexHash += hash.charCodeAt(i).toString(16);
-//   // }
-//   hash = '0x41' + hash;
-//   console.log(hash);
-//   Hash.update(hash);
-//   var hashOfHash = Hash.digest('hex');
-//   Hash.update(hashOfHash);
-//   hashOfHash = Hash.digest('hex');
-//   const verificationCode = hashOfHash.slice(0,8);
-//   var address = hash + verificationCode;
+const Hash = new Keccak(256);
+const GetNewAddressHash = async () => {
+  Hash.update(PublicKey.slice(4));
+  var hash = Hash.digest('hex');
+  console.log(hash);
+  hash = hash.slice(-40);
+  console.log(hash)
+  // let hexHash = '';
+  // for (let i = 0; i < hash.length; i++) {
+  //   hexHash += hash.charCodeAt(i).toString(16);
+  // }
+  hash = '0x41' + hash;
+  console.log(hash);
+  Hash.update(hash);
+  var hashOfHash = Hash.digest('hex');
+  Hash.update(hashOfHash);
+  hashOfHash = Hash.digest('hex');
+  const verificationCode = hashOfHash.slice(0,8);
+  var address = hash + verificationCode;
 
-//   const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-//   const BASE = BigInt(ALPHABET.length);
+  const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+  const BASE = BigInt(ALPHABET.length);
 
-//   function hexToBase58(hex: string): string {
-//     let num = BigInt(hex);
-//     let str = '';
-//     while (num > 0) {
-//       let rem = Number(num % BASE);
-//       str = ALPHABET[rem] + str;
-//       num = num / BASE;
-//     }
-//     return str;
-//   }
-
+  function hexToBase58(hex: string): string {
+    let num = BigInt(hex);
+    let str = '';
+    while (num > 0) {
+      let rem = Number(num % BASE);
+      str = ALPHABET[rem] + str;
+      num = num / BASE;
+    }
+    return str;
+  }
+  function base58ToHex(base58: string): string {
+    let hex = '';
+    let number = BigInt(0);
+  
+    for (const char of base58) {
+      number = number * BASE +  BigInt(ALPHABET.indexOf(char));
+    }
+  
+    while (number > 0) {
+      const remainder = number % BigInt(256);
+      hex = `0${remainder.toString(16)}`.slice(-2) + hex;
+      number = number / BigInt(256);
+    }
+  
+    return hex;
+  }
   
 
-//   const address1 = hexToBase58(address);
-//   const address2 = 'T' + address1;
-//   const address3 = base58ToHex(address2);
-//   console.log(address3)
-//   console.log(address2)
-//   console.log(address1)
-//   return { address3 }
-// } 
+  const address1 = hexToBase58(address);
+  const address2 = 'T' + address1;
+  const address3 = base58ToHex(address2);
+  console.log(address3)
+  console.log(address2)
+  // console.log(address1)
+  return address1;
+} 
 
 const options = {
   method: 'POST',
@@ -174,6 +192,7 @@ const CreateTransaction = async (OwnerAddress: string, ToAddress: string, Amount
 }
 
 const GetTransactionSign = async (TransactionObject: any, PrivateKey: string) => {
+  console.log("Hello")
   const TransactionSign = await (await fetch('https://api.shasta.trongrid.io/wallet/gettransactionsign', {
     method: 'POST',
     headers: HEADER,
@@ -217,7 +236,8 @@ const createNewAccount = async (AccountAddress: any) => {
     headers: HEADER,
     body: JSON.stringify({
       owner_address: `${DevAddress}`,
-      account_address: `${AccountAddress}`
+      account_address: `${AccountAddress}`,
+      visible: 'true'
     })
   }
   const res = await fetch(url, options);
@@ -286,18 +306,20 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
       const { ToAddress } = request.params as {
         ToAddress: string
       };
-      return await CreateTransaction(DevAddress,DevAddress, Amount); // changed for testing
+      const res =  await GetTransactionSign(await CreateTransaction(DevAddress,ToAddress, Amount), PrivateKey); // changed for testing
+      console.log(res);
+      return res;
 
     case 'SignTransaction':``
-      return await GetTransactionSign(CreateTransaction(DevAddress, DevAddress, Amount), PrivateKey); //changed for testing
+      return await GetTransactionSign(CreateTransaction(DevAddress, ToAddress, Amount), PrivateKey); //changed for testing
 
     case 'BroadcastTransaction':
       return await BroadcastTransaction();
 
     case 'CreateNewAccount':
       await foo();
-      const address =  base58ToHex(pkToAddress(PrivateKey));
-      console.log("Address " + address);
+      const address =  await GetNewAddressHash();
+      console.log(address);
       return await createNewAccount(address);
 
     default:

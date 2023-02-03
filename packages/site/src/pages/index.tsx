@@ -339,7 +339,7 @@ const Index = () => {
               !shouldDisplayReconnectButton(state.installedSnap)
             }
           />
-          {<input type="text" value={inputAddress} onChange={handleInputChange} />}
+          Reciever Address <input type="text" value={inputAddress} onChange={handleInputChange} />
           </form>
         <Card
           content={{

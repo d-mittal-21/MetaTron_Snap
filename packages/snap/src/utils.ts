@@ -1,7 +1,7 @@
 import {ec as EC} from 'elliptic';
-import { utils} from "ethers";
-const keccak256 = utils.keccak256;
-const sha256 = utils.sha256;
+import CryptoJS from 'crypto-js';
+const keccak256 = CryptoJS.SHA3;
+const sha256 = CryptoJS.SHA256;
 const ALPHABET : any = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const ALPHABET_MAP : any = {};
 const ADDRESS_PREFIX: any  = '41';
@@ -161,7 +161,7 @@ function byteArray2hexStr(byteArray: any) {
 }
 function SHA256(msgBytes : any) {
     const msgHex = byteArray2hexStr(msgBytes);
-    const hashHex = sha256('0x' + msgHex).replace(/^0x/, '')
+    const hashHex = sha256('0x' + msgHex).toString().replace(/^0x/, '')
     return hexStr2byteArray(hashHex);
 }
 function getBase58CheckAddress(addressBytes : any) {

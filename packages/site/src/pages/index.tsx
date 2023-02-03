@@ -112,7 +112,13 @@ const ErrorMessage = styled.div`
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
   const [num, setNum] = useState();
+  const [inputAddress, setInputAddress] = useState("");
   // const [string, setString] = useState<string | undefined>();
+
+  //function for handling changes in the inputs
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputAddress(event.target.value);
+  };
 
   const handleConnectClick = async () => {
     try {
@@ -149,8 +155,9 @@ const Index = () => {
     }
   };
 
-  const handleSendTransactionClick = async () => {
+  const handleSendTransactionClick = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
+      event.preventDefault();
       const response : any = window.ethereum.request({
         method: 'wallet_invokeSnap',
         params:  [
@@ -158,7 +165,7 @@ const Index = () => {
           {
             method: 'CreateTransaction',
             params: {
-              ToAddress : 'TCmj2ALymCKAANLNYLrdu6r4rf9Qw8fGRL'
+              ToAddress : inputAddress,
             }
           },
         ],
@@ -283,25 +290,28 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
-        <Card
-          content={{
-            title: 'Make a Transaction',
-            description:
-              'Transfer your Tron Token to another account',
-            button: (
-              <SendTransactionButton
-                onClick={handleSendTransactionClick}
-                disabled={!state.installedSnap}
-              />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
+        <form onSubmit={handleSendTransactionClick}>
+          <Card
+            content={{
+              title: 'Make a Transaction',
+              description:
+                'Transfer your Tron Token to another account',
+              button: (
+                <SendTransactionButton type="submit"
+                  // onClick={handleSendTransactionClick}
+                  disabled={!state.installedSnap}
+                />
+              ),
+            }}
+            disabled={!state.installedSnap}
+            fullWidth={
+              state.isFlask &&
+              Boolean(state.installedSnap) &&
+              !shouldDisplayReconnectButton(state.installedSnap)
+            }
+          />
+          Reciever Address: <input type="text" value={inputAddress} onChange={handleInputChange}> </input>
+        </form>
         <Card
           content={{
             title: 'Sign your Transaction',

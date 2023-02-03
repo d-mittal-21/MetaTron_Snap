@@ -51,6 +51,8 @@
     "@metamask/key-tree": "^6.2.1",
     "@metamask/snaps-types": "^0.28.0",
     "bs58": "^5.0.0",
+    "elliptic": "^6.5.4",
+    "ethers": "^6.0.0",
     "sha3": "^2.1.4"
   }
 }

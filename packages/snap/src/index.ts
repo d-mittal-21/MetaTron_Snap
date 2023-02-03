@@ -2,8 +2,7 @@ import { OnRpcRequestHandler } from '@metamask/snap-types';
 import { JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 // import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
 // import { fetchUrl } from './insights';
-import { Keccak } from 'sha3';
-import * as bs58 from 'bs58';
+import {pkToAddress} from './utils'
 
 const APIKEY = '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7';
 const HEADER: any = {"Access-Control-Allow-Origin": "*",'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json'}
@@ -15,7 +14,8 @@ const HEADER: any = {"Access-Control-Allow-Origin": "*",'TRON-PRO-API-KEY': `${A
  * @returns A message based on the origin.
  */
 
-
+const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+const BASE = BigInt(ALPHABET.length);
 const Amount: any = 5;
 const DevAddress = 'TCmj2ALymCKAANLNYLrdu6r4rf9Qw8fGRL';
 const Url = "https://api.shasta.trongrid.io/wallet/easytransferbyprivate" // tron api for EasyTransferByPrivate
@@ -56,73 +56,72 @@ const foo = async () => {
   console.log(Address);
 }
 
+function base58ToHex(base58: string): string {
+  let hex = '';
+  let number = BigInt(0);
 
+  for (const char of base58) {
+    number = number * BASE +  BigInt(ALPHABET.indexOf(char));
+  }
+
+  while (number > 0) {
+    const remainder = number % BigInt(256);
+    hex = `0${remainder.toString(16)}`.slice(-2) + hex;
+    number = number / BigInt(256);
+  }
+
+  return hex;
+}
 
 // const tronWeb = new TronWeb({
 //   fullHost: 'https://api.trongrid.io',
 //   headers: { "TRON-PRO-API-KEY": APIKEY },
 //   privateKey: PrivateKey
 // })
-const Hash = new Keccak(256);
-const GetNewAddressHash = async () => {
-  Hash.update(PublicKey);
-  var hash = Hash.digest('hex');
-  console.log(hash);
-  hash = hash.slice(-40);
-  console.log(hash)
-  // let hexHash = '';
-  // for (let i = 0; i < hash.length; i++) {
-  //   hexHash += hash.charCodeAt(i).toString(16);
-  // }
-  hash = '0x41' + hash;
-  console.log(hash);
-  Hash.update(hash);
-  var hashOfHash = Hash.digest('hex');
-  Hash.update(hashOfHash);
-  hashOfHash = Hash.digest('hex');
-  const verificationCode = hashOfHash.slice(0,8);
-  var address = hash + verificationCode;
+// const Hash = new Keccak(256);
+// const GetNewAddressHash = async () => {
+//   Hash.update(PublicKey);
+//   var hash = Hash.digest('hex');
+//   console.log(hash);
+//   hash = hash.slice(-40);
+//   console.log(hash)
+//   // let hexHash = '';
+//   // for (let i = 0; i < hash.length; i++) {
+//   //   hexHash += hash.charCodeAt(i).toString(16);
+//   // }
+//   hash = '0x41' + hash;
+//   console.log(hash);
+//   Hash.update(hash);
+//   var hashOfHash = Hash.digest('hex');
+//   Hash.update(hashOfHash);
+//   hashOfHash = Hash.digest('hex');
+//   const verificationCode = hashOfHash.slice(0,8);
+//   var address = hash + verificationCode;
 
-  const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-  const BASE = BigInt(ALPHABET.length);
+//   const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+//   const BASE = BigInt(ALPHABET.length);
 
-  function hexToBase58(hex: string): string {
-    let num = BigInt(hex);
-    let str = '';
-    while (num > 0) {
-      let rem = Number(num % BASE);
-      str = ALPHABET[rem] + str;
-      num = num / BASE;
-    }
-    return str;
-  }
+//   function hexToBase58(hex: string): string {
+//     let num = BigInt(hex);
+//     let str = '';
+//     while (num > 0) {
+//       let rem = Number(num % BASE);
+//       str = ALPHABET[rem] + str;
+//       num = num / BASE;
+//     }
+//     return str;
+//   }
 
-  function base58ToHex(base58: string): string {
-    let hex = '';
-    let number = BigInt(0);
-  
-    for (const char of base58) {
-      number = number * BASE +  BigInt(ALPHABET.indexOf(char));
-    }
-  
-    while (number > 0) {
-      const remainder = number % BigInt(256);
-      hex = `0${remainder.toString(16)}`.slice(-2) + hex;
-      number = number / BigInt(256);
-    }
-  
-    return hex;
-  }
   
 
-  const address1 = hexToBase58(address);
-  const address2 = 'T' + address1;
-  const address3 = base58ToHex(address2);
-  console.log(address3)
-  console.log(address2)
-  console.log(address1)
-  return { address3 }
-} 
+//   const address1 = hexToBase58(address);
+//   const address2 = 'T' + address1;
+//   const address3 = base58ToHex(address2);
+//   console.log(address3)
+//   console.log(address2)
+//   console.log(address1)
+//   return { address3 }
+// } 
 
 const options = {
   method: 'POST',
@@ -297,8 +296,8 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
 
     case 'CreateNewAccount':
       await foo();
-      const address =  await GetNewAddressHash();
-      console.log(address);
+      const address =  base58ToHex(pkToAddress(PrivateKey));
+      console.log("Address " + address);
       return await createNewAccount(address);
 
     default:

@@ -156,23 +156,19 @@ const GetAccountBalance = async (OwnerAddress : string) => {
   console.log('GetAccountBalance', OwnerAddress);
   const {blockID, number} = await GetLatestBlock();
   console.log("Fetching Balance")
-  const res = (await fetch('https://api.shasta.trongrid.io/wallet/getaccountbalance', {
+  const res = (await fetch('https://api.shasta.trongrid.io/wallet/getaccount', {
     method: 'POST',
     headers: HEADER,
     body: JSON.stringify({
-      account_identifier: {"address": `${OwnerAddress}`},
-      block_identifier: {
-        hash: blockID,
-        number
-      },
+      address: OwnerAddress,
       visible: true
     })
   }))
   
   console.log(res)
   const data = await res.json();
-  console.log(data)
-  return data['balance'];
+  console.log(data.balance)
+  return data['balance']/1000000;
 }
 
 const CreateTransaction = async (OwnerAddress: string, ToAddress: string, Amount: Number) => {
@@ -199,7 +195,7 @@ const GetTransactionSign = async (TransactionObject: any, PrivateKey: string) =>
     body: JSON.stringify({
       transaction: {
         raw_data: TransactionObject.raw_data,
-        raw_data_hex: TransactionObject.txID
+        txID: TransactionObject.txID
       },
       privateKey: PrivateKey
     })

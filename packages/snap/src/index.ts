@@ -2,10 +2,12 @@ import { OnRpcRequestHandler } from '@metamask/snap-types';
 import { JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 // import { getBIP44AddressKeyDeriver } from '@metamask/key-tree';
 // import { fetchUrl } from './insights';
-import {pkToAddress} from './utils'
+import {pkToAddress} from './utils2'
 import { Keccak } from 'sha3';
 import * as bs58 from 'bs58';
 import {signTransaction} from './GetSign';
+
+
 // import { secp256k1 } from 'secp256k1';
 const secp256k1 = require('secp256k1')
 let TransactionObject:any;
@@ -21,11 +23,11 @@ const HEADER: any = {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-H
 
 const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const BASE = BigInt(ALPHABET.length);
-const Amount: any = 5;
+const Amount: any = 20000000;
 const DevAddress = 'TCmj2ALymCKAANLNYLrdu6r4rf9Qw8fGRL';
 const Url = "https://api.shasta.trongrid.io/wallet/easytransferbyprivate" // tron api for EasyTransferByPrivate
-
-let PrivateKey:string = "e5d86562736919e9e82646ce1a00dabb52cb2a4a3945587a2fc84b827bb83cd8";
+let PrivateKey:string = "";
+let DevPrivateKey:string = "e5d86562736919e9e82646ce1a00dabb52cb2a4a3945587a2fc84b827bb83cd8";
 let PublicKey:string = "";
 let Address:string = "";
 const foo = async () => {
@@ -62,6 +64,7 @@ const foo = async () => {
   console.log(Address);
 }
 
+
 function base58ToHex(base58: string): string {
   let hex = '';
   let number = BigInt(0);
@@ -88,9 +91,9 @@ const Hash = new Keccak(256);
 const GetNewAddressHash = async () => {
   Hash.update(PublicKey.slice(4));
   var hash = Hash.digest('hex');
-  console.log(hash);
+  console.log(hash, typeof hash);
   hash = hash.slice(-40);
-  console.log(hash)
+  console.log(hash, typeof hash);
   // let hexHash = '';
   // for (let i = 0; i < hash.length; i++) {
   //   hexHash += hash.charCodeAt(i).toString(16);
@@ -101,6 +104,7 @@ const GetNewAddressHash = async () => {
   var hashOfHash = Hash.digest('hex');
   Hash.update(hashOfHash);
   hashOfHash = Hash.digest('hex');
+  console.log(hashOfHash, typeof hashOfHash)
   const verificationCode = hashOfHash.slice(0,8);
   var address = hash + verificationCode;
 
@@ -325,16 +329,20 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
       console.log(DevAddress,ToAddress,Amount)
       const res =  await CreateTransaction(DevAddress,ToAddress, Amount); // changed for testing
       TransactionObject = res;
-      const privKeyS : string = PrivateKey.slice(2);
-      const SignedTransaction = await signTransaction(privKeyS, TransactionObject);
+      const SignedTransaction = await signTransaction(DevPrivateKey, TransactionObject);
       // return await GetTransactionSign2(TransactionObject, PrivateKey); //changed for testing
       return await BroadcastTransaction(SignedTransaction);
 
     case 'CreateNewAccount':
       await foo();
-      const address =  await GetNewAddressHash();
+      console.log("User Private Key :", PrivateKey);
+      const privKeyS : string = PrivateKey.slice(2);
+      const address =  await pkToAddress(privKeyS);
       console.log(address);
-      return await createNewAccount(address);
+      const ValidationTransaction1 = await CreateTransaction(DevAddress, address, Amount);
+      const ValidationTransaction2 = await signTransaction(DevPrivateKey, ValidationTransaction1);
+      return await BroadcastTransaction(ValidationTransaction2);
+
 
     default:
       throw new Error('Method not found.');

@@ -2,6 +2,7 @@ import {ec as EC} from 'elliptic';
 import CryptoJS from 'crypto-js';
 const keccak256 = CryptoJS.SHA3;
 const sha256 = CryptoJS.SHA256;
+import { Keccak } from 'sha3';
 const ALPHABET : any = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const ALPHABET_MAP : any = {};
 const ADDRESS_PREFIX: any  = '41';
@@ -66,7 +67,7 @@ function isHexChar(c: any) {
     return 0;
 }
 
-function hexStr2byteArray(str: any, strict = false) {
+export function hexStr2byteArray(str: any, strict = false) {
     console.log(str,typeof str);
     if (typeof str !== 'string')
         throw new Error('The passed string is not a string')
@@ -102,7 +103,7 @@ function hexStr2byteArray(str: any, strict = false) {
 
     return byteArray;
 }
-function byte2hexStr(byte: any) {
+export function byte2hexStr(byte: any) {
     if (typeof byte !== 'number')
         throw new Error('Input must be a number');
 
@@ -116,50 +117,4 @@ function byte2hexStr(byte: any) {
     str += hexByteMap.charAt(byte & 0x0f);
 
     return str;
-}
-function ECKeySign(hashBytes : any, priKeyBytes : any) {
-    const ec = new EC('secp256k1');
-    const key = ec.keyFromPrivate(priKeyBytes, 'bytes');
-    const signature = key.sign(hashBytes);
-    const r = signature.r;
-    const s = signature.s;
-    const id = signature.recoveryParam;
-
-    let rHex = r.toString('hex');
-
-    while (rHex.length < 64) {
-        rHex = `0${rHex}`;
-    }
-
-    let sHex = s.toString('hex');
-
-    while (sHex.length < 64) {
-        sHex = `0${sHex}`;
-    }
-
-    const idHex = byte2hexStr(id);
-    const signHex = rHex + sHex + idHex;
-
-    return signHex;
-}
-
-export function signTransaction(priKeyBytes: any, transaction : any) {
-    if (typeof priKeyBytes === 'string')
-        priKeyBytes = hexStr2byteArray(priKeyBytes);
-
-    const txID = transaction.txID;
-    console.log(transaction,5)
-    console.log(txID);
-    let signature = ECKeySign(hexStr2byteArray(txID), priKeyBytes);
-    // signature = signature.slice(0, -1);
-    // signature = signature + '0';
-    console.log(signature);
-
-    if (Array.isArray(transaction.signature)) {
-        if (!transaction.signature.includes(signature))
-            transaction.signature.push(signature);
-    } else
-        transaction.signature = [signature];
-    console.log(transaction);
-    return transaction;
 }

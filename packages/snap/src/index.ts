@@ -5,7 +5,10 @@ import { JsonSLIP10Node, SLIP10Node } from '@metamask/key-tree';
 import {pkToAddress} from './utils'
 import { Keccak } from 'sha3';
 import * as bs58 from 'bs58';
-
+import {signTransaction} from './GetSign';
+// import { secp256k1 } from 'secp256k1';
+const secp256k1 = require('secp256k1')
+let TransactionObject:any;
 const APIKEY = '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7';
 const HEADER: any = {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers":"Content-Type, Authorization, X-Requested-With","Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json',}
 
@@ -172,7 +175,7 @@ const GetAccountBalance = async (OwnerAddress : string) => {
 }
 
 const CreateTransaction = async (OwnerAddress: string, ToAddress: string, Amount: Number) => {
-  const TransactionObject = await (await fetch('https://api.shasta.trongrid.io/wallet/createtransaction', {
+  const TransactionObject1 = await (await fetch('https://api.shasta.trongrid.io/wallet/createtransaction', {
     method: 'POST',
     headers: HEADER,
     body: JSON.stringify({
@@ -184,35 +187,52 @@ const CreateTransaction = async (OwnerAddress: string, ToAddress: string, Amount
       extra_data: 'string'
     })
   })).json();
-  return { TransactionObject };
+  return TransactionObject1;
 }
-
-const GetTransactionSign = async (TransactionObject: any, PrivateKey: string) => {
-  console.log("Hello")
-  const TransactionSign = await (await fetch('https://api.shasta.trongrid.io/wallet/gettransactionsign', {
-    method: 'POST',
-    headers: HEADER,
-    body: JSON.stringify({
-      transaction: {
-        raw_data: TransactionObject.raw_data,
-        txID: TransactionObject.txID
-      },
-      privateKey: PrivateKey
-    })
-  })).json();
-
-  return { TransactionSign };
+const stringToHex = (str: string) => {
+  var hex = '';
+  for (var i = 0; i < str.length; i++) {
+    hex += '' + str.charCodeAt(i).toString(16);
+  }
+  return hex;
 }
+// const GetTransactionSign = async (TransactionObject1: any, PrivateKey: string) => {
+//   var rawDataHex = JSON.stringify(TransactionObject1.raw_data)
+//   rawDataHex = stringToHex(rawDataHex);
+//   console.log("Hello")
+//   const TransactionSign = await (await fetch('https://api.shasta.trongrid.io/wallet/gettransactionsign', {
+//     method: 'POST',
+//     headers: HEADER,
+//     body: JSON.stringify({
+//       transaction: {
+//         raw_data: TransactionObject1.raw_data,
+//         raw_data_hex : TransactionObject1.raw_data_hex,
+//         txID: TransactionObject1.txID
+        
+//       },
+//       privateKey: PrivateKey
+//     })
+//   })).json();
 
-const BroadcastTransaction = async () => {
+//   return { TransactionSign };
+// }
+
+// const GetTransactionSign2 = async (TransactionObject1: any, PrivateKey: string) => {
+//   var enc = new TextEncoder();
+//   const Id = enc.encode(TransactionObject1.txID);
+//   const sign = secp256k1.ecdsaSign(Id, PrivateKey, { canonical: false });
+//   console.log(sign.toHex() + Buffer.from([sign.getRecoveryParam()]).toString('hex'));
+//   return sign.toHex() + Buffer.from([sign.getRecoveryParam()]).toString('hex');
+// }
+
+const BroadcastTransaction = async (signedTransaction: any) => {
   const BroadcastResult = await (await fetch('https://api.shasta.trongrid.io/wallet/broadcasttransaction', {
     method: 'POST',
     headers: HEADER,
-    body: JSON.stringify({
-      raw_data: '{"contract":[{"parameter":{"value":{"amount":1000,"owner_address":"41608f8da72479edc7dd921e4c30bb7e7cddbe722e","to_address":"41e9d79cc47518930bc322d9bf7cddd260a0260a8d"},"type_url":"type.googleapis.com/protocol.TransferContract"},"type":"TransferContract"}],"ref_block_bytes":"5e4b","ref_block_hash":"47c9dc89341b300d","expiration":1591089627000,"timestamp":1591089567635}',
-      raw_data_hex: '0a025e4b220847c9dc89341b300d40f8fed3a2a72e5a66080112620a2d747970652e676f6f676c65617069732e636f6d2f70726f746f636f6c2e5472616e73666572436f6e747261637412310a1541608f8da72479edc7dd921e4c30bb7e7cddbe722e121541e9d79cc47518930bc322d9bf7cddd260a0260a8d18e8077093afd0a2a72e'
-    })
+    body: JSON.stringify(signedTransaction)
   })).json();
+  console.log(BroadcastResult);
+  return BroadcastResult;
 }
 
 // const generateAccount = async () => {
@@ -302,15 +322,13 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
       const { ToAddress } = request.params as {
         ToAddress: string
       };
-      const res =  await GetTransactionSign(await CreateTransaction(DevAddress,ToAddress, Amount), PrivateKey); // changed for testing
-      console.log(res);
-      return res;
-
-    case 'SignTransaction':``
-      return await GetTransactionSign(CreateTransaction(DevAddress, ToAddress, Amount), PrivateKey); //changed for testing
-
-    case 'BroadcastTransaction':
-      return await BroadcastTransaction();
+      console.log(DevAddress,ToAddress,Amount)
+      const res =  await CreateTransaction(DevAddress,ToAddress, Amount); // changed for testing
+      TransactionObject = res;
+      const privKeyS : string = PrivateKey.slice(2);
+      const SignedTransaction = await signTransaction(privKeyS, TransactionObject);
+      // return await GetTransactionSign2(TransactionObject, PrivateKey); //changed for testing
+      return await BroadcastTransaction(SignedTransaction);
 
     case 'CreateNewAccount':
       await foo();

@@ -25,7 +25,7 @@ const Amount: any = 5;
 const DevAddress = 'TCmj2ALymCKAANLNYLrdu6r4rf9Qw8fGRL';
 const Url = "https://api.shasta.trongrid.io/wallet/easytransferbyprivate" // tron api for EasyTransferByPrivate
 
-let PrivateKey:string = "";
+let PrivateKey:string = "e5d86562736919e9e82646ce1a00dabb52cb2a4a3945587a2fc84b827bb83cd8";
 let PublicKey:string = "";
 let Address:string = "";
 const foo = async () => {

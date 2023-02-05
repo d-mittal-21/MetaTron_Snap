@@ -1,10 +1,10 @@
 import {ec as EC} from 'elliptic';
-import CryptoJS from 'crypto-js';
-const keccak256 = CryptoJS.SHA3;
-const sha256 = CryptoJS.SHA256;
+// import CryptoJS from 'crypto-js';
+// const keccak256 = CryptoJS.SHA3;
+// const sha256 = CryptoJS.SHA256;
 const ALPHABET : any = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const ALPHABET_MAP : any = {};
-const ADDRESS_PREFIX: any  = '41';
+// const ADDRESS_PREFIX: any  = '41';
 for (let i = 0; i < ALPHABET.length; i++)
     ALPHABET_MAP[ALPHABET.charAt(i)] = i;
 const BASE = 58;

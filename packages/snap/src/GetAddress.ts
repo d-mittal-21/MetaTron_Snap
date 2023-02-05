@@ -1,15 +1,15 @@
-import {ec as EC} from 'elliptic';
-import CryptoJS from 'crypto-js';
-const keccak256 = CryptoJS.SHA3;
-const sha256 = CryptoJS.SHA256;
-import { Keccak } from 'sha3';
-const ALPHABET : any = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+const {ec} = require('elliptic');
+const {utils}= require('ethers');
+const sha256 = utils.sha256;
+const keccak256 = utils.keccak256;
+const EC = ec;
+const ALPHABET : any  = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 const ALPHABET_MAP : any = {};
-const ADDRESS_PREFIX: any  = '41';
+const ADDRESS_PREFIX  = '41';
 for (let i = 0; i < ALPHABET.length; i++)
     ALPHABET_MAP[ALPHABET.charAt(i)] = i;
 const BASE = 58;
-function encode58(buffer: any) {
+function encode58(buffer : any) {
     if (buffer.length === 0)
         return '';
 
@@ -26,7 +26,7 @@ function encode58(buffer: any) {
         let carry = 0;
 
         for (j = 0; j < digits.length; ++j) {
-            digits[j] += carry;
+            digits[j] += carry;i
             carry = (digits[j] / BASE) | 0;
             digits[j] %= BASE
         }
@@ -42,7 +42,7 @@ function encode58(buffer: any) {
 
     return digits.reverse().map(digit => ALPHABET[digit]).join('');
 }
-function hexChar2byte(c : any) {
+function hexChar2byte(c: any) {
     let d;
 
     if (c >= 'A' && c <= 'F')
@@ -57,7 +57,7 @@ function hexChar2byte(c : any) {
     else
         throw new Error('The passed hex char is not a valid hex char');
 }
-function isHexChar(c: any) {
+function isHexChar(c :any) {
     if ((c >= 'A' && c <= 'F') ||
         (c >= 'a' && c <= 'f') ||
         (c >= '0' && c <= '9')) {
@@ -66,9 +66,7 @@ function isHexChar(c: any) {
 
     return 0;
 }
-
-export function hexStr2byteArray(str: any, strict = false) {
-    console.log(str,typeof str);
+function hexStr2byteArray(str : any, strict = false) {
     if (typeof str !== 'string')
         throw new Error('The passed string is not a string')
 
@@ -103,7 +101,44 @@ export function hexStr2byteArray(str: any, strict = false) {
 
     return byteArray;
 }
-export function byte2hexStr(byte: any) {
+function getPubKeyFromPriKey(priKeyBytes : any) {
+    const ec = new EC('secp256k1');
+    const key = ec.keyFromPrivate(priKeyBytes, 'bytes');
+    const pubkey = key.getPublic();
+    const x = pubkey.x;
+    const y = pubkey.y;
+
+    let xHex = x.toString('hex');
+
+    while (xHex.length < 64) {
+        xHex = `0${xHex}`;
+    }
+
+    let yHex = y.toString('hex');
+
+    while (yHex.length < 64) {
+        yHex = `0${yHex}`;
+    }
+
+    const pubkeyHex = `04${xHex}${yHex}`;
+    const pubkeyBytes = hexStr2byteArray(pubkeyHex);
+
+    return pubkeyBytes;
+}
+function computeAddress(pubBytes : any) {
+    if (pubBytes.length === 65)
+        pubBytes = pubBytes.slice(1);
+    console.log(pubBytes);
+    const hash = keccak256(pubBytes).toString().substring(2);
+    const addressHex = ADDRESS_PREFIX + hash.substring(24);
+
+    return hexStr2byteArray(addressHex);
+}
+function getAddressFromPriKey(priKeyBytes : any) {
+    let pubBytes = getPubKeyFromPriKey(priKeyBytes);
+    return computeAddress(pubBytes);
+}
+function byte2hexStr(byte : any) {
     if (typeof byte !== 'number')
         throw new Error('Input must be a number');
 
@@ -117,4 +152,31 @@ export function byte2hexStr(byte: any) {
     str += hexByteMap.charAt(byte & 0x0f);
 
     return str;
+}
+function byteArray2hexStr(byteArray : any) {
+    let str = '';
+
+    for (let i = 0; i < (byteArray.length); i++)
+        str += byte2hexStr(byteArray[i]);
+    return str;
+}
+function SHA256(msgBytes : any ) {
+    const msgHex = byteArray2hexStr(msgBytes);
+    const hashHex = sha256('0x' + msgHex).toString().replace(/^0x/, '')
+    return hexStr2byteArray(hashHex);
+}
+function getBase58CheckAddress(addressBytes: any ) {
+    const hash0 = SHA256(addressBytes);
+    const hash1 = SHA256(hash0);
+
+    let checkSum = hash1.slice(0, 4);
+    checkSum = addressBytes.concat(checkSum);
+
+    return encode58(checkSum);
+}
+export function pkToAddress(privateKey : any , strict = false) {
+    const com_priKeyBytes = hexStr2byteArray(privateKey, strict);
+    const com_addressBytes = getAddressFromPriKey(com_priKeyBytes);
+
+    return getBase58CheckAddress(com_addressBytes);
 }

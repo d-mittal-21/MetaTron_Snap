@@ -43,6 +43,11 @@ const Container = styled.div`
   }
 `;
 
+const input2 = styled.input`
+ margin-right: 2;
+`;
+
+
 const Heading = styled.h1`
   margin-top: 0;
   margin-bottom: 2.4rem;
@@ -61,6 +66,29 @@ const Subtitle = styled.p`
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
+`;
+
+const Subtitle2 = styled.p`
+  font-size: ${({ theme }) => theme.fontSizes.large};
+  font-weight: 500;
+  margin-top: 15;
+  margin-bottom: 0;
+  ${({ theme }) => theme.mediaQueries.small} {
+    font-size: ${({ theme }) => theme.fontSizes.text};
+  }
+  outline: 5px solid green;
+`;
+
+const Subtitle3 = styled.p`
+  font-size: ${({ theme }) => theme.fontSizes.large};
+  font-weight: 500;
+  margin-top: 2;
+  margin-bottom: 0;
+  margin-right: 3;
+  ${({ theme }) => theme.mediaQueries.small} {
+    font-size: ${({ theme }) => theme.fontSizes.text};
+  }
+  outline: 2px solid #6F4CFF;
 `;
 
 const CardContainer = styled.div`
@@ -117,12 +145,18 @@ const Index = () => {
   const [num2, setNum2] = useState();
   const [str, setStr] = useState("");
   const [inputAddress, setInputAddress] = useState("");
+  const [inputAmount, setInputAmount] = useState(Number);
   // const [string, setString] = useState<string | undefined>();
 
   //function for handling changes in the inputs
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputAddress(event.target.value);
   };
+  const handleInputChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const amt = Number(event.target.value)
+    setInputAmount(amt);
+  };
+
 
   const handleConnectClick = async () => {
     try {
@@ -187,6 +221,7 @@ const Index = () => {
             method: 'CreateTransaction',
             params: {
               ToAddress : inputAddress,
+              ConAmount : inputAmount*1000000,
             }
           },
         ],
@@ -233,8 +268,8 @@ const Index = () => {
       <Subtitle>
         Get started by using different functions available for making transactions
       </Subtitle>
-      {str && <div>{str}</div>}
-      {num2 && <div>{num2}</div>}
+      {str && <Subtitle2>{str}</Subtitle2>}
+      {num2 && <Subtitle2>Your Initial Balance : {num2}</Subtitle2>}
       <CardContainer>
         {state.error && (
           <ErrorMessage>
@@ -286,9 +321,9 @@ const Index = () => {
         )}
         <Card
           content={{
-            title: 'Send Hello message',
+            title: 'Initialize',
             description:
-              'Display a custom message within a confirmation screen in MetaMask.',
+              'Update Account status',
             button: (
               <SendHelloButton
                 onClick={handleSendHelloClick}
@@ -341,6 +376,10 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
+        <div>
+          {num && <Subtitle3>Your Current Balance: {num}</Subtitle3>}
+          {/* {string && <div>{string}</div>} */}
+        </div>
         <form onSubmit={handleSendTransactionClick}>
           <Card
             content={{
@@ -361,50 +400,12 @@ const Index = () => {
               !shouldDisplayReconnectButton(state.installedSnap)
             }
           />
-          Reciever Address <input type="text" value={inputAddress} onChange={handleInputChange} />
+          <Subtitle3><form>
+          Reciever Address : <input type="text" value={inputAddress} onChange={handleInputChange} />
+          Amount : <input value={inputAmount} onChange={handleInputChange2} />
+            </form></Subtitle3>
+          
           </form>
-        <Card
-          content={{
-            title: 'Sign your Transaction',
-            description:
-              'Sign the transaction to prove who you are',
-            button: (
-              <SendTransactionSignButton
-                onClick={handleSendTransactionSignClick}
-                disabled={!state.installedSnap}
-              />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
-        <Card
-          content={{
-            title: 'Broadcast your Transaction',
-            description:
-              'Send your transaction to the blockchain',
-            button: (
-              <SendBroadcastButton
-                onClick={handleSendBroadcastClick}
-                disabled={!state.installedSnap}
-              />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
-        <div>
-          {num && <div>{num}</div>}
-          {/* {string && <div>{string}</div>} */}
-        </div>
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}

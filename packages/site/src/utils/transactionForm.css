@@ -125,7 +125,10 @@ body1 {
 
   table, th, td {
     border: 1px solid;
+    font-family: sans-serif;
+    font-size: 16px;
     border-collapse: collapse;
+    background-color: black;
     margin-left: -40;
   }
   

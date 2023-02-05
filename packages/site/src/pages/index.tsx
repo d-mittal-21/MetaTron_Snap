@@ -116,11 +116,11 @@ const Subtitle4 = styled.p`
   margin-top: 2;
   margin-bottom: 0;
   margin-right: 20%;
-  margin-left: -80%;
+  margin-left: -50%;
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
-  outline: 1px solid #FFFFFF;
+  outline: 1px solid grey;
 `;
 
 const CardContainer = styled.div`
@@ -180,7 +180,7 @@ const Index = () => {
   const [str, setStr] = useState("");
   const [inputAddress, setInputAddress] = useState("");
   const [inputAmount, setInputAmount] = useState(Number);
-  const [trArray, setArray] = useState([]);
+  const [trArray, setArray] = useState([NaN]);
   // const [string, setString] = useState<string | undefined>();
 
   //function for handling changes in the inputs
@@ -306,8 +306,10 @@ const Index = () => {
       <Subtitle>
         Get started by using different functions available for making transactions
       </Subtitle>
-      {str && <Subtitle2>{str}</Subtitle2>}
-      {num2 && <Subtitle2>Your Initial Balance : {num2}</Subtitle2>}
+      <Notice>
+        {str && <p>{str}</p>}
+        {num2 && <p>Your Initial Balance : {num2}</p>}
+      </Notice>
       <CardContainer>
         {state.error && (
           <ErrorMessage>

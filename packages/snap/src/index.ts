@@ -154,7 +154,7 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
       const Result = await ValidateAddress(UserAddress);
       console.log(Result);
       if (Result.result){
-        const returnVal1 = "Your Metamask-Tron account address is Set up : " + `${UserAddress}`;
+        const returnVal1 = "Your Tron account address is Set up : " + `${UserAddress}`;
         const returnBalance = await GetAccountBalance(UserAddress)
         console.log(returnVal1)
         return [returnVal1 , returnBalance];

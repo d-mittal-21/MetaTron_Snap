@@ -264,6 +264,15 @@ const createNewAccount = async (AccountAddress: any) => {
   return await res.json();
 }
 
+const ValidateAddress = async (AccountAddress : any) => {
+  const Result = await (await fetch('https://api.shasta.trongrid.io/wallet/validateaddress', {
+    method: 'POST',
+    headers: HEADER,
+    body: JSON.stringify({address: AccountAddress})
+  })).json();
+  return  Result;
+}
+
 const TransferTron = async () => {
   const response = await fetch('https://api.shasta.trongrid.io/wallet/easytransferbyprivate', options)
 
@@ -291,6 +300,7 @@ const getMessage = (originString: string): string =>
 export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) => {
   switch (request.method) {
     case 'hello':
+      await foo();
       return wallet.request({
         method: 'snap_confirm',
         params: [
@@ -322,6 +332,23 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
       console.log(rs);
       return rs;
 
+    case 'ValidateAddress': 
+      const privKeyS2 : string = PrivateKey.slice(2);
+      const address2 =  await pkToAddress(privKeyS2);
+      console.log(address2);
+      const Result = await ValidateAddress(address2);
+      console.log(Result);
+      if (Result.result){
+        const returnVal1 = "Your Metamask-Tron account address is already Set up : " + `${address2}`;
+        const returnBalance = await GetAccountBalance(address2)
+        console.log(returnVal1)
+        return [returnVal1 , returnBalance];
+      }
+      else {
+        const returnVal2 = "Your Account Address is not activated please Click on Create Account"
+        return returnVal2 ;
+      }
+
     case 'CreateTransaction':
       const { ToAddress } = request.params as {
         ToAddress: string
@@ -334,14 +361,14 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
       return await BroadcastTransaction(SignedTransaction);
 
     case 'CreateNewAccount':
-      await foo();
       console.log("User Private Key :", PrivateKey);
       const privKeyS : string = PrivateKey.slice(2);
       const address =  await pkToAddress(privKeyS);
       console.log(address);
       const ValidationTransaction1 = await CreateTransaction(DevAddress, address, Amount);
       const ValidationTransaction2 = await signTransaction(DevPrivateKey, ValidationTransaction1);
-      return await BroadcastTransaction(ValidationTransaction2);
+      const BroadcastMessage =  await BroadcastTransaction(ValidationTransaction2);
+      return [address, BroadcastMessage];
 
 
     default:

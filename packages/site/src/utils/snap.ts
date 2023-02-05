@@ -84,6 +84,18 @@ export const sendAccountBalance : any = async () => {
   });
 };
 
+export const sendValidateAddress : any = async () => {
+  return await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'ValidateAddress',
+      },
+    ],
+  });
+};
+
 export const sendTransaction = async () => {
   await window.ethereum.request({
     method: 'wallet_invokeSnap',

@@ -12,6 +12,7 @@ import {
   sendTransaction,
   sendTransactionSign,
   shouldDisplayReconnectButton,
+  sendValidateAddress,
 } from '../utils';
 import {
   ConnectButton,
@@ -113,6 +114,8 @@ const ErrorMessage = styled.div`
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
   const [num, setNum] = useState();
+  const [num2, setNum2] = useState();
+  const [str, setStr] = useState("");
   const [inputAddress, setInputAddress] = useState("");
   // const [string, setString] = useState<string | undefined>();
 
@@ -125,6 +128,7 @@ const Index = () => {
     try {
       await connectSnap();
       const installedSnap = await getSnap();
+      
 
       dispatch({
         type: MetamaskActions.SetInstalled,
@@ -139,6 +143,11 @@ const Index = () => {
   const handleSendHelloClick = async () => {
     try {
       await sendHello();
+      const [result, balance2] = await sendValidateAddress();
+      console.log(23444);
+      console.log(result);
+      setStr(result);
+      setNum2(balance2);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -150,6 +159,17 @@ const Index = () => {
       const balance = await sendAccountBalance();
       console.log(balance);
       setNum(balance)
+    } catch (e) {
+      console.error(e);
+      dispatch({ type: MetamaskActions.SetError, payload: e });
+    }
+  };
+
+  const handleSendValidateAddressClick = async () => {
+    try {
+      const result: string = await sendValidateAddress();
+      console.log(result);
+      setStr(result);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -213,6 +233,8 @@ const Index = () => {
       <Subtitle>
         Get started by using different functions available for making transactions
       </Subtitle>
+      {str && <div>{str}</div>}
+      {num2 && <div>{num2}</div>}
       <CardContainer>
         {state.error && (
           <ErrorMessage>
@@ -254,7 +276,7 @@ const Index = () => {
                 'While connected to a local running snap this button will always be displayed in order to update the snap if a change is made.',
               button: (
                 <ReconnectButton
-                  onClick={handleConnectClick}
+                  onClick= {handleConnectClick}
                   disabled={!state.installedSnap}
                 />
               ),

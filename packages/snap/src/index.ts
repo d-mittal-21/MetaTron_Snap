@@ -105,7 +105,7 @@ const ValidateAddress = async (AccountAddress : any) => {
 const Last5Transactions = async (AccountAddress : string) => {
   const res : any = await (await fetch(`https://shastapi.tronscan.org/api/transaction?sort=-timestamp&count=true&limit=1&start=0&address=${AccountAddress}`)).json();
   let transactionList : any = []
-  console.log(res);
+  console.log(res , "Last 5 transactions");
   res.data.forEach((trx : any) => {
     transactionList.push(
       {
@@ -117,6 +117,8 @@ const Last5Transactions = async (AccountAddress : string) => {
       }
     )
   })
+  console.log("Printing Transaction List");
+  console.log(transactionList,"transaction list");
   return transactionList;
 }
 const getMessage = (originString: string): string =>
@@ -146,12 +148,13 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
 
     case 'ValidateAddress': 
       const privKeyS2 : string = UserPrivateKey;
+      console.log(UserPrivateKey);
       UserAddress = pkToAddress(privKeyS2);
       console.log(UserAddress, "In Validate Address");
       const Result = await ValidateAddress(UserAddress);
       console.log(Result);
       if (Result.result){
-        const returnVal1 = "Your Metamask-Tron account address is already Set up : " + `${UserAddress}`;
+        const returnVal1 = "Your Metamask-Tron account address is Set up : " + `${UserAddress}`;
         const returnBalance = await GetAccountBalance(UserAddress)
         console.log(returnVal1)
         return [returnVal1 , returnBalance];
@@ -178,7 +181,7 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
             textAreaContent:
               "Sender Address : " + UserAddress + "\n" +
               "Receiver Address : " + ToAddress + "\n" +
-              "Ammount to be Transfered : " + Amount + "\n" +
+              "Ammount to be Transfered : " + ConAmount + "\n" +
               "Gas Fees : 1 TRX",  
           },
         ],

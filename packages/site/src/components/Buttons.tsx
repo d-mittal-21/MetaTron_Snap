@@ -42,6 +42,17 @@ const Button = styled.button`
   }
 `;
 
+const Button2 = styled.button`
+  display: flex;
+  align-self: flex-start;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+  ${({ theme }) => theme.mediaQueries.small} {
+    width: 100%;
+  }
+`;
+
 const ButtonText = styled.span`
   margin-left: 1rem;
 `;
@@ -102,8 +113,8 @@ export const SendNewAccountButton = (props: ComponentProps<typeof Button>) => {
   return <Button {...props}>Create Account</Button>;
 };
 
-export const SendTransactionButton = (props: ComponentProps<typeof Button>) => {
-  return <Button {...props}>Transfer</Button>;
+export const SendTransactionButton = (props: ComponentProps<typeof Button2>) => {
+  return <Button2 {...props}>Transfer</Button2>;
 };
 
 export const SendTransactionSignButton = (props: ComponentProps<typeof Button>) => {

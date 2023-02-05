@@ -13,6 +13,7 @@ import {
   sendTransactionSign,
   shouldDisplayReconnectButton,
   sendValidateAddress,
+  sendLastTransactions,
 } from '../utils';
 import {
   ConnectButton,
@@ -25,13 +26,27 @@ import {
   SendNewAccountButton,
   SendBroadcastButton,
   Card,
+  Card2,
 } from '../components';
-
+import '../utils/transactionForm.css'
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
+  margin-top: 7.6rem;
+  margin-bottom: 7.6rem;
+  ${({ theme }) => theme.mediaQueries.large} {
+    padding-left: 2.4rem;
+    padding-right: 2.4rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    width: auto;
+  }
+`;
+const Container2 = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: 7.6rem;
   margin-bottom: 7.6rem;
   ${({ theme }) => theme.mediaQueries.small} {
@@ -63,6 +78,7 @@ const Subtitle = styled.p`
   font-weight: 500;
   margin-top: 0;
   margin-bottom: 0;
+  text-align: center;
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
@@ -73,10 +89,11 @@ const Subtitle2 = styled.p`
   font-weight: 500;
   margin-top: 15;
   margin-bottom: 0;
+  text-align: center;
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
-  outline: 5px solid green;
+  outline: 2px solid grey;
 `;
 
 const Subtitle3 = styled.p`
@@ -84,11 +101,26 @@ const Subtitle3 = styled.p`
   font-weight: 500;
   margin-top: 2;
   margin-bottom: 0;
-  margin-right: 3;
+  margin-right: 20%;
+  margin-left: 25%;
+  border-radius: 15pt;
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
   outline: 2px solid #6F4CFF;
+`;
+
+const Subtitle4 = styled.p`
+  font-size: ${({ theme }) => theme.fontSizes.large};
+  font-weight: 500;
+  margin-top: 2;
+  margin-bottom: 0;
+  margin-right: 20%;
+  margin-left: -80%;
+  ${({ theme }) => theme.mediaQueries.small} {
+    font-size: ${({ theme }) => theme.fontSizes.text};
+  }
+  outline: 1px solid #FFFFFF;
 `;
 
 const CardContainer = styled.div`
@@ -139,6 +171,8 @@ const ErrorMessage = styled.div`
   }
 `;
 
+
+
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
   const [num, setNum] = useState();
@@ -146,6 +180,7 @@ const Index = () => {
   const [str, setStr] = useState("");
   const [inputAddress, setInputAddress] = useState("");
   const [inputAmount, setInputAmount] = useState(Number);
+  const [trArray, setArray] = useState([]);
   // const [string, setString] = useState<string | undefined>();
 
   //function for handling changes in the inputs
@@ -156,8 +191,6 @@ const Index = () => {
     const amt = Number(event.target.value)
     setInputAmount(amt);
   };
-
-
   const handleConnectClick = async () => {
     try {
       await connectSnap();
@@ -178,6 +211,12 @@ const Index = () => {
     try {
       await sendHello();
       const [result, balance2] = await sendValidateAddress();
+      if(result) {
+        const ListTransaction : any = await sendLastTransactions();
+        console.log("Listing Transactions");
+        console.log(ListTransaction);
+        setArray(ListTransaction);
+      }
       console.log(23444);
       console.log(result);
       setStr(result);
@@ -221,7 +260,7 @@ const Index = () => {
             method: 'CreateTransaction',
             params: {
               ToAddress : inputAddress,
-              ConAmount : inputAmount*1000000,
+              ConAmount : inputAmount*1000,
             }
           },
         ],
@@ -232,7 +271,6 @@ const Index = () => {
       dispatch({ type: MetamaskActions.SetError, payload: e });
     }
   };
-
   const handleSendTransactionSignClick = async () => {
     try {
       await sendTransactionSign();
@@ -304,20 +342,25 @@ const Index = () => {
           />
         )}
         {shouldDisplayReconnectButton(state.installedSnap) && (
-          <Card
-            content={{
-              title: 'Reconnect',
-              description:
-                'While connected to a local running snap this button will always be displayed in order to update the snap if a change is made.',
-              button: (
-                <ReconnectButton
-                  onClick= {handleConnectClick}
-                  disabled={!state.installedSnap}
-                />
-              ),
-            }}
-            disabled={!state.installedSnap}
-          />
+        <Card
+          content={{
+            title: 'Reconnect',
+            description:
+              'Connect to the Metamask Snap',
+            button: (
+              <ReconnectButton
+                onClick= {handleConnectClick}
+                disabled={!state.installedSnap}
+              />
+            ),
+          }}
+          disabled={!state.installedSnap}
+          fullWidth={
+            state.isFlask &&
+            Boolean(state.installedSnap) &&
+            !shouldDisplayReconnectButton(state.installedSnap)
+          }
+        />
         )}
         <Card
           content={{
@@ -357,7 +400,7 @@ const Index = () => {
             !shouldDisplayReconnectButton(state.installedSnap)
           }
         />
-        <Card
+        <Card2
           content={{
             title: 'Get Current Acount Balance',
             description:
@@ -380,7 +423,7 @@ const Index = () => {
           {num && <Subtitle3>Your Current Balance: {num}</Subtitle3>}
           {/* {string && <div>{string}</div>} */}
         </div>
-        <form onSubmit={handleSendTransactionClick}>
+        {/* <form onSubmit={handleSendTransactionClick}>
           <Card
             content={{
               title: 'Make a Transaction',
@@ -400,12 +443,64 @@ const Index = () => {
               !shouldDisplayReconnectButton(state.installedSnap)
             }
           />
-          <Subtitle3><form>
+         <Subtitle3><form>
           Reciever Address : <input type="text" value={inputAddress} onChange={handleInputChange} />
           Amount : <input value={inputAmount} onChange={handleInputChange2} />
-            </form></Subtitle3>
+            </form></Subtitle3> 
           
-          </form>
+          </form> */}
+
+      <Subtitle3>  
+          <div className="form1">
+      <div className="title1">Make Transaction</div>
+      <div className="subtitle5">Transfer your tron to a different Account</div>
+      <div className="input-container1 ic1">
+        <input type="text" value={inputAddress} onChange={handleInputChange} id="firstname" className="input1" placeholder=" " />
+        <div className="cut"></div>
+        <label htmlFor="firstname" className="placeholder1">Reciever's Address</label>
+      </div>
+      <div className="input-container1 ic2">
+        <input value={inputAmount} onChange={handleInputChange2} id="lastname" className="input1" placeholder=" " type="text" />
+        <div className="cut"></div>
+        <label htmlFor="lastname" className="placeholder1">Amount</label>
+      </div>
+      <div className="input-container1 ic2">
+        <input id="email" className="input1" type="text" placeholder=" " />
+        <div className="cut cut-short"></div>
+        <label htmlFor="email" className="placeholder1">Tags</label>
+      </div>
+      <SendTransactionButton
+                  onClick={handleSendTransactionClick}
+                  disabled={!state.installedSnap}
+                />
+  </div>
+  </Subtitle3>
+
+  <Subtitle4>
+    <table>
+          <tr key={6}>
+            <th>From</th>
+            <th>To</th>
+            <th>Hash</th>
+            <th>Amount</th>
+            <th>Fee</th>
+          </tr>
+          {
+            trArray?trArray.map((tr : any,key : any)=>{
+              return <tr key={key}>
+                <th>{tr.ownerAddress}</th>
+                <th>{tr.toAddress}</th>
+                <th>{tr.hash}</th>
+                <th>{tr.amount/1000000}</th>
+                <th>{tr.Fee}</th>
+              </tr>
+            }):
+            "No Transaction Record" 
+          }
+        </table>
+  </Subtitle4>
+  
+
         <Notice>
           <p>
             Please note that the <b>snap.manifest.json</b> and{' '}
@@ -417,6 +512,7 @@ const Index = () => {
       </CardContainer>
     </Container>
   );
+
 };
 
 export default Index;

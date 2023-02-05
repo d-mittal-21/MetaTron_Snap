@@ -144,6 +144,21 @@ export const sendNewAccount = async () => {
   });
 };
 
+export const sendLastTransactions = async () => {
+  const trxList = await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'Last5Transactions',
+      },
+    ],
+  });
+  console.log('Calling from snap');
+  console.log(trxList);
+  return trxList;
+};
+
 
 
 

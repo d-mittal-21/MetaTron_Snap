@@ -1,4 +1,4 @@
-import { useContext , useState} from 'react';
+import { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { MetamaskActions, MetaMaskContext } from '../hooks';
 import { defaultSnapOrigin } from '../config';
@@ -29,57 +29,57 @@ import {
   Card2,
 } from '../components';
 import '../utils/transactionForm.css';
-import { styled as style2} from '@mui/material/styles';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { fontFamily } from '@mui/system';
+// import { styled as style2 } from '@mui/material/styles';
+// import Table from '@mui/material/Table';
+// import TableBody from '@mui/material/TableBody';
+// import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+// import TableContainer from '@mui/material/TableContainer';
+// import TableHead from '@mui/material/TableHead';
+// import TableRow from '@mui/material/TableRow';
+// import Paper from '@mui/material/Paper';
+// import { fontFamily } from '@mui/system';
 
-const StyledTableCell = style2(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
+// const StyledTableCell = style2(TableCell)(({ theme }) => ({
+//   [`&.${tableCellClasses.head}`]: {
+//     backgroundColor: theme.palette.common.black,
+//     color: theme.palette.common.white,
+//   },
+//   [`&.${tableCellClasses.body}`]: {
+//     fontSize: 14,
+//   },
+// }));
 
-const StyledTableRow = style2(TableRow)(({ theme }) => ({
-  
-  '&':{
-    fontFamily: "Courier",
-  },
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover,
-  },
-  // hide last border
-  '&:last-child td, &:last-child th': {
-    border: 0,
-  },
-}));
+// const StyledTableRow = style2(TableRow)(({ theme }) => ({
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein };
-}
+//   '&': {
+//     fontFamily: "Courier",
+//   },
+//   '&:nth-of-type(odd)': {
+//     backgroundColor: theme.palette.action.hover,
+//   },
+//   // hide last border
+//   '&:last-child td, &:last-child th': {
+//     border: 0,
+//   },
+// }));
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
+// function createData(
+//   name: string,
+//   calories: number,
+//   fat: number,
+//   carbs: number,
+//   protein: number,
+// ) {
+//   return { name, calories, fat, carbs, protein };
+// }
+
+// const rows = [
+//   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+//   createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+//   createData('Eclair', 262, 16.0, 24, 6.0),
+//   createData('Cupcake', 305, 3.7, 67, 4.3),
+//   createData('Gingerbread', 356, 16.0, 49, 3.9),
+// ];
 
 const Container = styled.div`
   display: flex;
@@ -95,24 +95,24 @@ const Container = styled.div`
     width: auto;
   }
 `;
-const Container2 = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 7.6rem;
-  margin-bottom: 7.6rem;
-  ${({ theme }) => theme.mediaQueries.small} {
-    padding-left: 2.4rem;
-    padding-right: 2.4rem;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    width: auto;
-  }
-`;
+// const Container2 = styled.div`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   margin-top: 7.6rem;
+//   margin-bottom: 7.6rem;
+//   ${({ theme }) => theme.mediaQueries.small} {
+//     padding-left: 2.4rem;
+//     padding-right: 2.4rem;
+//     margin-top: 2rem;
+//     margin-bottom: 2rem;
+//     width: auto;
+//   }
+// `;
 
-const input2 = styled.input`
- margin-right: 2;
-`;
+// const input2 = styled.input`
+//  margin-right: 2;
+// `;
 
 
 const Heading = styled.h1`
@@ -168,7 +168,7 @@ const Subtitle4 = styled.p`
   margin-top: 2;
   margin-bottom: 0;
   margin-right: 20%;
-  margin-left: -50%;
+  margin-left: 0%;
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
@@ -202,6 +202,62 @@ const Notice = styled.div`
   ${({ theme }) => theme.mediaQueries.small} {
     margin-top: 1.2rem;
     padding: 1.6rem;
+  }
+`;
+
+const Notice6 = styled.div`
+  background-color: ${({ theme }) => theme.colors.background.alternative};
+  border: 1px solid ${({ theme }) => theme.colors.border.default};
+  color: ${({ theme }) => theme.colors.text.alternative};
+  border-radius: ${({ theme }) => theme.radii.default};
+  padding: 2.4rem;
+  margin-top: 2.4rem;
+
+  width: 80%;
+
+  & > * {
+    margin: 0;
+  }
+  ${({ theme }) => theme.mediaQueries.small} {
+    margin-top: 1.2rem;
+    padding: 1.6rem;
+  }
+`;
+
+const Notice3 = styled.div`
+  background-color: ${({ theme }) => theme.colors.background.alternative};
+  border: 1px solid ${({ theme }) => theme.colors.border.default};
+  color: ${({ theme }) => theme.colors.text.alternative};
+  border-radius: ${({ theme }) => theme.radii.default};
+  padding: 0.8rem;
+  margin-top: 1.4rem;
+  width: 100%;
+
+  & > * {
+    margin: 0;
+  }
+  ${({ theme }) => theme.mediaQueries.small} {
+    margin-top: 1.2rem;
+    // padding: 1.6rem;
+  }
+`;
+
+
+const Notice2 = styled.div`
+  background-color: ${({ theme }) => theme.colors.background.alternative};
+  border: 1px solid ${({ theme }) => theme.colors.border.default};
+  color: ${({ theme }) => theme.colors.text.alternative};
+  border-radius: ${({ theme }) => theme.radii.default};
+  padding: .8rem;
+  margin-top: 2.4rem;
+  width: 16%;
+
+  & > * {
+    margin: 0;
+  }
+  ${({ theme }) => theme.mediaQueries.small} {
+    margin-top: 1.2rem;
+    // padding: 1.6rem;
   }
 `;
 
@@ -247,7 +303,7 @@ const Index = () => {
     try {
       await connectSnap();
       const installedSnap = await getSnap();
-      
+
 
       dispatch({
         type: MetamaskActions.SetInstalled,
@@ -263,8 +319,8 @@ const Index = () => {
     try {
       await sendHello();
       const [result, balance2] = await sendValidateAddress();
-      if(result) {
-        const ListTransaction : any = await sendLastTransactions();
+      if (result) {
+        const ListTransaction: any = await sendLastTransactions();
         console.log("Listing Transactions");
         console.log(ListTransaction);
         setArray(ListTransaction);
@@ -293,15 +349,15 @@ const Index = () => {
   const handleSendTransactionClick = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
-      const response : any = window.ethereum.request({
+      const response: any = window.ethereum.request({
         method: 'wallet_invokeSnap',
-        params:  [
+        params: [
           defaultSnapOrigin,
           {
             method: 'CreateTransaction',
             params: {
-              ToAddress : inputAddress,
-              ConAmount : inputAmount*1000000,
+              ToAddress: inputAddress,
+              ConAmount: inputAmount * 1000000,
             }
           },
         ],
@@ -325,7 +381,7 @@ const Index = () => {
   return (
     <Container>
       <Heading>
-        Welcome to <Span>Tron Metamask Integration</Span>
+        Welcome to <Span>MetaTron</Span>
       </Heading>
       <Subtitle>
         Get started by using different functions available for making transactions
@@ -334,122 +390,135 @@ const Index = () => {
         {str && <p>{str}</p>}
         {num2 && <p>Your Balance : {num2} TRX</p>}
       </Notice>
-      <CardContainer>
+      <div>
         {state.error && (
           <ErrorMessage>
             <b>An error happened:</b> {state.error.message}
           </ErrorMessage>
         )}
-        {!state.isFlask && (
-          <Card
-            content={{
-              title: 'Install',
-              description:
-                'Snaps is pre-release software only available in MetaMask Flask, a canary distribution for developers with access to upcoming features.',
-              button: <InstallFlaskButton />,
+        <div
+          style={{
+            "display": "flex",
+            "alignItems": "center",
+            "justifyContent": "space-between",
+            "gap": "100px",
+            "marginTop": "30px"
+          }}
+        >
+          <div
+            style={{
+              "display": "grid",
+              "gridTemplateColumns": "auto auto"
             }}
-            fullWidth
-          />
-        )}
-        {!state.installedSnap && (
-          <Card
-            content={{
-              title: 'Connect',
-              description:
-                'Get started by connecting to and installing the example snap.',
-              button: (
-                <ConnectButton
-                  onClick={handleConnectClick}
-                  disabled={!state.isFlask}
-                />
-              ),
-            }}
-            disabled={!state.isFlask}
-          />
-        )}
-        {shouldDisplayReconnectButton(state.installedSnap) && (
-        <Card
-          content={{
-            title: 'Reconnect',
-            description:
-              'Connect to the Metamask Snap',
-            button: (
-              <ReconnectButton
-                onClick= {handleConnectClick}
-                disabled={!state.installedSnap}
+          >
+            {!state.isFlask && (
+              <Card
+                content={{
+                  title: 'Install',
+                  description:
+                    'Snaps is pre-release software only available in MetaMask Flask, a canary distribution for developers with access to upcoming features.',
+                  button: <InstallFlaskButton />,
+                }}
+                fullWidth
               />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
-        )}
-        <Card
-          content={{
-            title: 'Initialize',
-            description:
-              'Update Account status',
-            button: (
-              <SendHelloButton
-                onClick={handleSendHelloClick}
-                disabled={!state.installedSnap}
+            )}
+            {!state.installedSnap && (
+              <Card
+                content={{
+                  title: 'Connect',
+                  description:
+                    'Get started by connecting to and installing the example snap.',
+                  button: (
+                    <ConnectButton
+                      onClick={handleConnectClick}
+                      disabled={!state.isFlask}
+                    />
+                  ),
+                }}
+                disabled={!state.isFlask}
               />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
-        <Card
-          content={{
-            title: 'New Account',
-            description:
-              'Generate your new account on TRON network',
-            button: (
-              <SendNewAccountButton
-                onClick={handleSendNewAccountClick}
+            )}
+            {shouldDisplayReconnectButton(state.installedSnap) && (
+              <Card
+                content={{
+                  title: 'Reconnect',
+                  description:
+                    'Connect to the Metamask Snap',
+                  button: (
+                    <ReconnectButton
+                      onClick={handleConnectClick}
+                      disabled={!state.installedSnap}
+                    />
+                  ),
+                }}
                 disabled={!state.installedSnap}
+                fullWidth={
+                  state.isFlask &&
+                  Boolean(state.installedSnap) &&
+                  !shouldDisplayReconnectButton(state.installedSnap)
+                }
               />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
-        <Card2
-          content={{
-            title: 'Get Current Acount Balance',
-            description:
-              'Display your balance in account',
-            button: (
-              <SendAccountBalanceButton
-                onClick={handleSendAccountBalanceClick}
-                disabled={!state.installedSnap}
-              />
-            ),
-          }}
-          disabled={!state.installedSnap}
-          fullWidth={
-            state.isFlask &&
-            Boolean(state.installedSnap) &&
-            !shouldDisplayReconnectButton(state.installedSnap)
-          }
-        />
-        <div>
-          {num && <Subtitle3>Your Current Balance: {num}</Subtitle3>}
-          {/* {string && <div>{string}</div>} */}
-        </div>
-        {/* <form onSubmit={handleSendTransactionClick}>
+            )}
+            <Card2
+              content={{
+                title: 'Initialize',
+                description:
+                  'Update Account status',
+                button: (
+                  <SendHelloButton
+                    onClick={handleSendHelloClick}
+                    disabled={!state.installedSnap}
+                  />
+                ),
+              }}
+              disabled={!state.installedSnap}
+              fullWidth={
+                state.isFlask &&
+                Boolean(state.installedSnap) &&
+                !shouldDisplayReconnectButton(state.installedSnap)
+              }
+            />
+            <Card
+              content={{
+                title: 'New Account',
+                description:
+                  'Generate your new account on TRON network',
+                button: (
+                  <SendNewAccountButton
+                    onClick={handleSendNewAccountClick}
+                    disabled={!state.installedSnap}
+                  />
+                ),
+              }}
+              disabled={!state.installedSnap}
+              fullWidth={
+                state.isFlask &&
+                Boolean(state.installedSnap) &&
+                !shouldDisplayReconnectButton(state.installedSnap)
+              }
+            />
+            <Card2
+              content={{
+                title: 'Get Current Acount Balance',
+                description:
+                  'Display your balance in account',
+                button: (
+                  <SendAccountBalanceButton
+                    onClick={handleSendAccountBalanceClick}
+                    disabled={!state.installedSnap}
+                  />
+                ),
+              }}
+              disabled={!state.installedSnap}
+              fullWidth={
+                state.isFlask &&
+                Boolean(state.installedSnap) &&
+                !shouldDisplayReconnectButton(state.installedSnap)
+              }
+            />
+          </div>
+
+          {/* <form onSubmit={handleSendTransactionClick}>
           <Card
             content={{
               title: 'Make a Transaction',
@@ -476,73 +545,108 @@ const Index = () => {
           
           </form> */}
 
-      <Subtitle3>  
-          <div className="form1">
-      <div className="title1">Make Transaction</div>
-      <div className="subtitle5">Transfer your tron to a different Account</div>
-      <div className="input-container1 ic1">
-        <input type="text" value={inputAddress} onChange={handleInputChange} id="firstname" className="input1" placeholder=" " />
-        <div className="cut"></div>
-        <label htmlFor="firstname" className="placeholder1">Reciever's Address</label>
-      </div>
-      <div className="input-container1 ic2">
-        <input value={inputAmount} onChange={handleInputChange2} id="lastname" className="input1" placeholder=" " type="text" />
-        <div className="cut"></div>
-        <label htmlFor="lastname" className="placeholder1">Amount</label>
-      </div>
-      <div className="input-container1 ic2">
-        <input id="email" className="input1" type="text" placeholder=" " />
-        <div className="cut cut-short"></div>
-        <label htmlFor="email" className="placeholder1">Tags</label>
-      </div>
-      <SendTransactionButton
+          <div>
+            <div>
+              <div className="form1">
+                <div className="title1">Make Transaction</div>
+                <div className="subtitle5">Transfer your tron to a different Account</div>
+                <div className="input-container1 ic1">
+                  <input type="text" value={inputAddress} onChange={handleInputChange} id="firstname" className="input1" placeholder=" " />
+                  <div className="cut"></div>
+                  <label htmlFor="firstname" className="placeholder1">Reciever's Address</label>
+                </div>
+                <div className="input-container1 ic2">
+                  <input value={inputAmount} onChange={handleInputChange2} id="lastname" className="input1" placeholder=" " type="text" />
+                  <div className="cut"></div>
+                  <label htmlFor="lastname" className="placeholder1">Amount</label>
+                </div>
+                <div className="input-container1 ic2">
+                  <input id="email" className="input1" type="text" placeholder=" " />
+                  <div className="cut cut-short"></div>
+                  <label htmlFor="email" className="placeholder1">Tags</label>
+                </div>
+                <SendTransactionButton
                   onClick={handleSendTransactionClick}
                   disabled={!state.installedSnap}
                 />
-  </div>
-  </Subtitle3>
+              </div>
+            </div>
+          </div>
+        </div>
 
-  <Notice>
-    <p text-align='center'>Last 5 Transactions</p>
-  </Notice>
-          
-          <TableContainer sx= {{ margin: 1 }} component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow >
-            <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="left">From Address</StyledTableCell>
-            <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="left">To Address</StyledTableCell>
-            <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="left">Hash&nbsp;(link)</StyledTableCell>
-            <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="right">Amount&nbsp;(Trx)</StyledTableCell>
-            <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="right">Fee&nbsp;(Trx)</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {trArray.map((tr : any,key : any) => (
-            <StyledTableRow key={key}>
-              <StyledTableCell component="th" scope="row" align="left">
-                {tr.ownerAddress}
-              </StyledTableCell>
-              <StyledTableCell component="th" scope="row" align="left">{tr.toAddress}</StyledTableCell>
-              <StyledTableCell component="th" scope="row" align="left"><a href={"https://shasta.tronscan.org/#/transaction/"+tr.hash}>{tr.hash}</a></StyledTableCell>
-              <StyledTableCell align="right">{tr.amount/1000000}</StyledTableCell>
-              <StyledTableCell align="right">{tr.fee}</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  
+        <Notice2>
+          <p style={{ "textAlign": "center", "fontWeight": "bold", "fontSize": 18 }}>Last 5 Transactions</p>
+        </Notice2>
 
-        <Notice>
-          <p>
-            Please note that the <b>snap.manifest.json</b> and{' '}
-            <b>package.json</b> must be located in the server root directory and
-            the bundle must be hosted at the location specified by the location
-            field.
-          </p>
-        </Notice>
-      </CardContainer>
+        <div>
+          <Notice3>
+            <table>
+              <thead>
+                <tr key={6}>
+                  <th style={{ "fontWeight": "bold", "fontSize": 18, "minWidth": 325, "textAlign": "left" }}>From</th>
+                  <th style={{ "fontWeight": "bold", "fontSize": 18, "minWidth": 325, "textAlign": "left" }}>To</th>
+                  <th style={{ "fontWeight": "bold", "fontSize": 18, "minWidth": 270, "textAlign": "left" }}>Hash</th>
+                  <th style={{ "fontWeight": "bold", "fontSize": 18, "textAlign": "left" }}>Amount</th>
+                  <th style={{ "fontWeight": "bold", "fontSize": 18, "minWidth": 50, "textAlign": "right" }}>Fee</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  trArray ? trArray.map((tr: any, key: any) => {
+                    return <tr key={key}>
+                      <th style={{ "fontWeight": "normal", "fontSize": 14, "textAlign": "left" }}>{tr.ownerAddress}</th>
+                      <th style={{ "fontWeight": "normal", "fontSize": 14, "textAlign": "left" }}>{tr.toAddress}</th>
+                      <th style={{ "textAlign": "left", "fontSize": 14 }}><a style={{ "fontWeight": "normal", "color": "#D6D9DC" }} href={"https://shasta.tronscan.org/#/transaction/" + tr.hash}>{tr.hash.substr(1, 13)}.......{tr.hash.substr(-13)}</a></th>
+                      <th style={{ "fontWeight": "normal", "fontSize": 14, "textAlign": "right" }}>{tr.amount / 1000000}</th>
+                      <th style={{ "fontWeight": "normal", "fontSize": 14, "textAlign": "right" }}>{tr.fee}</th>
+                    </tr>
+                  }) :
+                    "No Transaction Record"
+                }
+              </tbody>
+            </table>
+          </Notice3>
+        </div>
+
+        {/* <TableContainer sx={{ margin: 1 }} component={Paper}>
+          <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <TableHead>
+              <TableRow >
+                <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="left">From Address</StyledTableCell>
+                <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="left">To Address</StyledTableCell>
+                <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="left">Hash&nbsp;(link)</StyledTableCell>
+                <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="right">Amount&nbsp;(Trx)</StyledTableCell>
+                <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="right">Fee&nbsp;(Trx)</StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {trArray.map((tr: any, key: any) => (
+                <StyledTableRow key={key}>
+                  <StyledTableCell component="th" scope="row" align="left">
+                    {tr.ownerAddress}
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row" align="left">{tr.toAddress}</StyledTableCell>
+                  <StyledTableCell component="th" scope="row" align="left"><a href={"https://shasta.tronscan.org/#/transaction/" + tr.hash}>{tr.hash}</a></StyledTableCell>
+                  <StyledTableCell align="right">{tr.amount / 1000000}</StyledTableCell>
+                  <StyledTableCell align="right">{tr.fee}</StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer> */}
+
+        {/* <div style={{"alignItems": "center"}}>
+          <Notice >
+            <p>
+              Please note that the <b>snap.manifest.json</b> and{' '}
+              <b>package.json</b> must be located in the server root directory and
+              the bundle must be hosted at the location specified by the location
+              field.
+            </p>
+          </Notice>
+        </div> */}
+
+      </div>
     </Container>
   );
 

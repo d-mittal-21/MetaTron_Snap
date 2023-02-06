@@ -151,9 +151,10 @@ body1 {
   }
 
   tbody tr {
-    border-bottom: 1px solid #dddddd;
-  }
-
+    border-bottom: 1px solid #dddddd; 
+  }*/
+  
+/* 
   tbody tr:nth-of-type(odd) {
     background-color: #c4bdbd;
     color : black;
@@ -161,9 +162,9 @@ body1 {
 
   tbody tr:last-of-type {
     border-bottom: 2px solid grey;
-  }
+  } */
 
-  a:nth-of-type(even) {
+  /* a:nth-of-type(even) {
     color: white;
   }
 

@@ -28,7 +28,11 @@ import {
   Card,
   Card2,
 } from '../components';
+<<<<<<< HEAD
 import '../utils/transactionForm.css';
+=======
+import '../utils/transactionForm.css'
+>>>>>>> f85a2897fa26fc551551ccb635887e4cc8a78054
 import { styled as style2} from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -37,7 +41,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+<<<<<<< HEAD
 import { fontFamily } from '@mui/system';
+=======
+>>>>>>> f85a2897fa26fc551551ccb635887e4cc8a78054
 
 const StyledTableCell = style2(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,10 +57,13 @@ const StyledTableCell = style2(TableCell)(({ theme }) => ({
 }));
 
 const StyledTableRow = style2(TableRow)(({ theme }) => ({
+<<<<<<< HEAD
   
   '&':{
     fontFamily: "Courier",
   },
+=======
+>>>>>>> f85a2897fa26fc551551ccb635887e4cc8a78054
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
   },
@@ -62,6 +72,7 @@ const StyledTableRow = style2(TableRow)(({ theme }) => ({
     border: 0,
   },
 }));
+<<<<<<< HEAD
 
 function createData(
   name: string,
@@ -81,6 +92,8 @@ const rows = [
   createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
+=======
+>>>>>>> f85a2897fa26fc551551ccb635887e4cc8a78054
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -502,6 +515,7 @@ const Index = () => {
   </div>
   </Subtitle3>
 
+<<<<<<< HEAD
   <Notice>
     <p text-align='center'>Last 5 Transactions</p>
   </Notice>
@@ -515,16 +529,63 @@ const Index = () => {
             <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="left">Hash&nbsp;(link)</StyledTableCell>
             <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="right">Amount&nbsp;(Trx)</StyledTableCell>
             <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="right">Fee&nbsp;(Trx)</StyledTableCell>
+=======
+          <Subtitle4>
+            <table>
+              <thead>
+                  <tr key={6}>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Hash</th>
+                    <th>Amount</th>
+                    <th>Fee</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {
+                      trArray?trArray.map((tr : any,key : any)=>{
+                        return <tr key={key}>
+                          <th>{tr.ownerAddress}</th>
+                          <th>{tr.toAddress}</th>
+                          <th><a href={"https://shasta.tronscan.org/#/transaction/"+tr.hash}>{tr.hash}</a></th>
+                          <th>{tr.amount/1000000}</th>
+                          <th>{tr.fee}</th>
+                        </tr>
+                      }):
+                      "No Transaction Record" 
+                    }
+                  </tbody>
+                </table>
+          </Subtitle4>
+          <Subtitle4>
+          <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <TableHead>
+          <TableRow>
+            <StyledTableCell>From Address</StyledTableCell>
+            <StyledTableCell align="right">To Address</StyledTableCell>
+            <StyledTableCell align="right">Hash&nbsp;(link)</StyledTableCell>
+            <StyledTableCell align="right">Amount&nbsp;(Trx)</StyledTableCell>
+            <StyledTableCell align="right">Fee&nbsp;(Trx)</StyledTableCell>
+>>>>>>> f85a2897fa26fc551551ccb635887e4cc8a78054
           </TableRow>
         </TableHead>
         <TableBody>
           {trArray.map((tr : any,key : any) => (
             <StyledTableRow key={key}>
+<<<<<<< HEAD
               <StyledTableCell component="th" scope="row" align="left">
                 {tr.ownerAddress}
               </StyledTableCell>
               <StyledTableCell component="th" scope="row" align="left">{tr.toAddress}</StyledTableCell>
               <StyledTableCell component="th" scope="row" align="left"><a href={"https://shasta.tronscan.org/#/transaction/"+tr.hash}>{tr.hash}</a></StyledTableCell>
+=======
+              <StyledTableCell component="th" scope="row">
+                {tr.ownerAddress}
+              </StyledTableCell>
+              <StyledTableCell component="th" scope="row" align="right">{tr.toAddress}</StyledTableCell>
+              <StyledTableCell component="th" scope="row" align="right"><a href={"https://shasta.tronscan.org/#/transaction/"+tr.hash}>{tr.hash}</a></StyledTableCell>
+>>>>>>> f85a2897fa26fc551551ccb635887e4cc8a78054
               <StyledTableCell align="right">{tr.amount/1000000}</StyledTableCell>
               <StyledTableCell align="right">{tr.fee}</StyledTableCell>
             </StyledTableRow>
@@ -532,7 +593,11 @@ const Index = () => {
         </TableBody>
       </Table>
     </TableContainer>
+<<<<<<< HEAD
   
+=======
+          </Subtitle4>
+>>>>>>> f85a2897fa26fc551551ccb635887e4cc8a78054
 
         <Notice>
           <p>

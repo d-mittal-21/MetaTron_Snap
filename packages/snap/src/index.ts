@@ -170,7 +170,7 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
         ConAmount: any,
       };
       console.log(UserAddress,ToAddress,ConAmount)
-      const res =  await CreateTransaction(UserAddress,ToAddress,ConAmount); // changed for testing
+       // changed for testing
       const confirm: any = await wallet.request({
         method: 'snap_confirm',
         params: [
@@ -181,12 +181,13 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
             textAreaContent:
               "Sender Address : " + UserAddress + "\n" +
               "Receiver Address : " + ToAddress + "\n" +
-              "Ammount to be Transfered : " + ConAmount + "\n" +
+              "Ammount to be Transfered : " + ConAmount/100 + "TRX\n" +
               "Gas Fees : 1 TRX",  
           },
         ],
       });
       if (confirm) {
+        const res =  await CreateTransaction(UserAddress,ToAddress,ConAmount);
         TransactionObject = res;
         console.log(res);
         console.log(UserPrivateKey, 77);

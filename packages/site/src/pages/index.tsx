@@ -260,7 +260,7 @@ const Index = () => {
             method: 'CreateTransaction',
             params: {
               ToAddress : inputAddress,
-              ConAmount : inputAmount*1000,
+              ConAmount : inputAmount*100,
             }
           },
         ],
@@ -308,7 +308,7 @@ const Index = () => {
       </Subtitle>
       <Notice>
         {str && <p>{str}</p>}
-        {num2 && <p>Your Balance : {num2}</p>}
+        {num2 && <p>Your Balance : {num2} TRX</p>}
       </Notice>
       <CardContainer>
         {state.error && (

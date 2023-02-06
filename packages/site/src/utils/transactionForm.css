@@ -162,3 +162,13 @@ body1 {
   tbody tr:last-of-type {
     border-bottom: 2px solid grey;
   }
+
+  a:nth-of-type(even) {
+    color: white;
+  }
+
+  a {
+    color: black;
+  }
+
+  

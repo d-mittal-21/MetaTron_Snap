@@ -495,9 +495,9 @@ const Index = () => {
                         return <tr key={key}>
                           <th>{tr.ownerAddress}</th>
                           <th>{tr.toAddress}</th>
-                          <th>{tr.hash}</th>
+                          <th><a href={"https://shasta.tronscan.org/#/transaction/"+tr.hash}>{tr.hash}</a></th>
                           <th>{tr.amount/1000000}</th>
-                          <th>{tr.Fee}</th>
+                          <th>{tr.fee}</th>
                         </tr>
                       }):
                       "No Transaction Record" 

@@ -103,7 +103,7 @@ const ValidateAddress = async (AccountAddress : any) => {
 }
 
 const Last5Transactions = async (AccountAddress : string) => {
-  const res : any = await (await fetch(`https://shastapi.tronscan.org/api/transaction?sort=-timestamp&count=true&limit=1&start=0&address=${AccountAddress}`)).json();
+  const res : any = await (await fetch(`https://shastapi.tronscan.org/api/transaction?sort=-timestamp&count=true&start=0&address=${AccountAddress}`)).json();
   let transactionList : any = []
   console.log(res , "Last 5 transactions");
   res.data.forEach((trx : any) => {
@@ -113,7 +113,7 @@ const Last5Transactions = async (AccountAddress : string) => {
         ownerAddress: trx.contractData.owner_address,
         toAddress: trx.contractData.to_address,
         amount: trx.contractData.amount,
-        fee: trx.cost.net_fee
+        fee: Number(trx.cost.fee)/1000000
       }
     )
   })

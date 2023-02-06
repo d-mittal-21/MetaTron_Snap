@@ -134,15 +134,15 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
           {
             prompt: getMessage(origin),
             description:
-              'This custom confirmation is just for display purposes.',
+              'This custom confirmation is just for Initialization only.',
             textAreaContent:
-              'But you can edit the snap source code to make it do something, if you want to!',
+              'Confirming this would display your account status',
           },
         ],
       });
     case 'GetAccountBalance':
       console.log("Checking GetAccountBalance")
-      const rs = await GetAccountBalance(DevAddress);
+      const rs = await GetAccountBalance(UserAddress);
       console.log(rs);
       return rs;
 

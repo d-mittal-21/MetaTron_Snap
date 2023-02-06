@@ -107,7 +107,7 @@ const Subtitle3 = styled.p`
   ${({ theme }) => theme.mediaQueries.small} {
     font-size: ${({ theme }) => theme.fontSizes.text};
   }
-  outline: 2px solid #6F4CFF;
+  outline: 2px solid grey;
 `;
 
 const Subtitle4 = styled.p`
@@ -180,7 +180,7 @@ const Index = () => {
   const [str, setStr] = useState("");
   const [inputAddress, setInputAddress] = useState("");
   const [inputAmount, setInputAmount] = useState(Number);
-  const [trArray, setArray] = useState([NaN]);
+  const [trArray, setArray] = useState([]);
   // const [string, setString] = useState<string | undefined>();
 
   //function for handling changes in the inputs
@@ -231,7 +231,7 @@ const Index = () => {
     try {
       const balance = await sendAccountBalance();
       console.log(balance);
-      setNum(balance)
+      setNum2(balance)
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -308,7 +308,7 @@ const Index = () => {
       </Subtitle>
       <Notice>
         {str && <p>{str}</p>}
-        {num2 && <p>Your Initial Balance : {num2}</p>}
+        {num2 && <p>Your Balance : {num2}</p>}
       </Notice>
       <CardContainer>
         {state.error && (
@@ -478,29 +478,33 @@ const Index = () => {
   </div>
   </Subtitle3>
 
-  <Subtitle4>
-    <table>
-          <tr key={6}>
-            <th>From</th>
-            <th>To</th>
-            <th>Hash</th>
-            <th>Amount</th>
-            <th>Fee</th>
-          </tr>
-          {
-            trArray?trArray.map((tr : any,key : any)=>{
-              return <tr key={key}>
-                <th>{tr.ownerAddress}</th>
-                <th>{tr.toAddress}</th>
-                <th>{tr.hash}</th>
-                <th>{tr.amount/1000000}</th>
-                <th>{tr.Fee}</th>
-              </tr>
-            }):
-            "No Transaction Record" 
-          }
-        </table>
-  </Subtitle4>
+          <Subtitle4>
+            <table>
+              <thead>
+                  <tr key={6}>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Hash</th>
+                    <th>Amount</th>
+                    <th>Fee</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {
+                      trArray?trArray.map((tr : any,key : any)=>{
+                        return <tr key={key}>
+                          <th>{tr.ownerAddress}</th>
+                          <th>{tr.toAddress}</th>
+                          <th>{tr.hash}</th>
+                          <th>{tr.amount/1000000}</th>
+                          <th>{tr.Fee}</th>
+                        </tr>
+                      }):
+                      "No Transaction Record" 
+                    }
+                  </tbody>
+                </table>
+          </Subtitle4>
   
 
         <Notice>

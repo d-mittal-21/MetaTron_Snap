@@ -238,17 +238,6 @@ const Index = () => {
     }
   };
 
-  const handleSendValidateAddressClick = async () => {
-    try {
-      const result: string = await sendValidateAddress();
-      console.log(result);
-      setStr(result);
-    } catch (e) {
-      console.error(e);
-      dispatch({ type: MetamaskActions.SetError, payload: e });
-    }
-  };
-
   const handleSendTransactionClick = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
@@ -260,29 +249,12 @@ const Index = () => {
             method: 'CreateTransaction',
             params: {
               ToAddress : inputAddress,
-              ConAmount : inputAmount*100,
+              ConAmount : inputAmount*1000000,
             }
           },
         ],
       })
       console.log(response)
-    } catch (e) {
-      console.error(e);
-      dispatch({ type: MetamaskActions.SetError, payload: e });
-    }
-  };
-  const handleSendTransactionSignClick = async () => {
-    try {
-      await sendTransactionSign();
-    } catch (e) {
-      console.error(e);
-      dispatch({ type: MetamaskActions.SetError, payload: e });
-    }
-  };
-
-  const handleSendBroadcastClick = async () => {
-    try {
-      await sendBroadcast();
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });

@@ -6,9 +6,6 @@ import {signTransaction} from './GetSign';
 let TransactionObject:any;
 const APIKEY = '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7';
 const HEADER: any = {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers":"Content-Type, Authorization, X-Requested-With","Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json',}
-const ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
-const BASE = BigInt(ALPHABET.length);
-const Amount: any = 2000000;
 const DevAddress = 'TCmj2ALymCKAANLNYLrdu6r4rf9Qw8fGRL';
 let UserPrivateKey:string = "";
 let DevPrivateKey:string = "e5d86562736919e9e82646ce1a00dabb52cb2a4a3945587a2fc84b827bb83cd8";
@@ -28,22 +25,6 @@ const UpdatePrivateKey = async () => {
   UserAddress = pkToAddress(UserPrivateKey);
 }
 
-
-function base58ToHex(base58: string): string {
-  let hex = '';
-  let number = BigInt(0);
-  for (const char of base58) {
-    number = number * BASE +  BigInt(ALPHABET.indexOf(char));
-  }
-
-  while (number > 0) {
-    const remainder = number % BigInt(256);
-    hex = `0${remainder.toString(16)}`.slice(-2) + hex;
-    number = number / BigInt(256);
-  }
-
-  return hex;
-}
 
 const GetAccountBalance = async (OwnerAddress : string) => {
   console.log("Fetching Balance")
@@ -71,7 +52,7 @@ const CreateTransaction = async (OwnerAddress: string, ToAddress: string, Amount
     body: JSON.stringify({
       to_address: ToAddress,
       owner_address: OwnerAddress,
-      amount: 20000000,
+      amount: Amount,
       permission_id: 0,
       visible: true,
       extra_data: 'string'
@@ -181,7 +162,7 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
             textAreaContent:
               "Sender Address : " + UserAddress + "\n" +
               "Receiver Address : " + ToAddress + "\n" +
-              "Ammount to be Transfered : " + ConAmount/100 + "TRX\n" +
+              "Ammount to be Transfered : " + ConAmount/1000000 + "TRX\n" +
               "Gas Fees : 1 TRX",  
           },
         ],
@@ -204,7 +185,7 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
       console.log("User Private Key :", UserPrivateKey);
       UserAddress =  pkToAddress(UserPrivateKey);
       console.log(UserAddress);
-      const ValidationTransaction1 = await CreateTransaction(DevAddress, UserAddress, Amount);
+      const ValidationTransaction1 = await CreateTransaction(DevAddress, UserAddress, 20*1000000);
       const ValidationTransaction2 = await signTransaction(DevPrivateKey, ValidationTransaction1);
       const BroadcastMessage =  await BroadcastTransaction(ValidationTransaction2);
       return [UserAddress, BroadcastMessage];

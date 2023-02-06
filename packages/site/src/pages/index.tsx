@@ -28,7 +28,59 @@ import {
   Card,
   Card2,
 } from '../components';
-import '../utils/transactionForm.css'
+import '../utils/transactionForm.css';
+import { styled as style2} from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { fontFamily } from '@mui/system';
+
+const StyledTableCell = style2(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = style2(TableRow)(({ theme }) => ({
+  
+  '&':{
+    fontFamily: "Courier",
+  },
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
+
+function createData(
+  name: string,
+  calories: number,
+  fat: number,
+  carbs: number,
+  protein: number,
+) {
+  return { name, calories, fat, carbs, protein };
+}
+
+const rows = [
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Eclair', 262, 16.0, 24, 6.0),
+  createData('Cupcake', 305, 3.7, 67, 4.3),
+  createData('Gingerbread', 356, 16.0, 49, 3.9),
+];
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -450,33 +502,36 @@ const Index = () => {
   </div>
   </Subtitle3>
 
-          <Subtitle4>
-            <table>
-              <thead>
-                  <tr key={6}>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Hash</th>
-                    <th>Amount</th>
-                    <th>Fee</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    {
-                      trArray?trArray.map((tr : any,key : any)=>{
-                        return <tr key={key}>
-                          <th>{tr.ownerAddress}</th>
-                          <th>{tr.toAddress}</th>
-                          <th><a href={"https://shasta.tronscan.org/#/transaction/"+tr.hash}>{tr.hash}</a></th>
-                          <th>{tr.amount/1000000}</th>
-                          <th>{tr.fee}</th>
-                        </tr>
-                      }):
-                      "No Transaction Record" 
-                    }
-                  </tbody>
-                </table>
-          </Subtitle4>
+  <Notice>
+    <p text-align='center'>Last 5 Transactions</p>
+  </Notice>
+          
+          <TableContainer sx= {{ margin: 1 }} component={Paper}>
+      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <TableHead>
+          <TableRow >
+            <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="left">From Address</StyledTableCell>
+            <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="left">To Address</StyledTableCell>
+            <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="left">Hash&nbsp;(link)</StyledTableCell>
+            <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="right">Amount&nbsp;(Trx)</StyledTableCell>
+            <StyledTableCell sx={{ fontWeight: 'bold', fontSize: 14 }} align="right">Fee&nbsp;(Trx)</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {trArray.map((tr : any,key : any) => (
+            <StyledTableRow key={key}>
+              <StyledTableCell component="th" scope="row" align="left">
+                {tr.ownerAddress}
+              </StyledTableCell>
+              <StyledTableCell component="th" scope="row" align="left">{tr.toAddress}</StyledTableCell>
+              <StyledTableCell component="th" scope="row" align="left"><a href={"https://shasta.tronscan.org/#/transaction/"+tr.hash}>{tr.hash}</a></StyledTableCell>
+              <StyledTableCell align="right">{tr.amount/1000000}</StyledTableCell>
+              <StyledTableCell align="right">{tr.fee}</StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   
 
         <Notice>

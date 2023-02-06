@@ -29,6 +29,34 @@ import {
   Card2,
 } from '../components';
 import '../utils/transactionForm.css'
+import { styled as style2} from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
+const StyledTableCell = style2(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = style2(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -477,7 +505,34 @@ const Index = () => {
                   </tbody>
                 </table>
           </Subtitle4>
-  
+          <Subtitle4>
+          <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <TableHead>
+          <TableRow>
+            <StyledTableCell>From Address</StyledTableCell>
+            <StyledTableCell align="right">To Address</StyledTableCell>
+            <StyledTableCell align="right">Hash&nbsp;(link)</StyledTableCell>
+            <StyledTableCell align="right">Amount&nbsp;(Trx)</StyledTableCell>
+            <StyledTableCell align="right">Fee&nbsp;(Trx)</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {trArray.map((tr : any,key : any) => (
+            <StyledTableRow key={key}>
+              <StyledTableCell component="th" scope="row">
+                {tr.ownerAddress}
+              </StyledTableCell>
+              <StyledTableCell component="th" scope="row" align="right">{tr.toAddress}</StyledTableCell>
+              <StyledTableCell component="th" scope="row" align="right"><a href={"https://shasta.tronscan.org/#/transaction/"+tr.hash}>{tr.hash}</a></StyledTableCell>
+              <StyledTableCell align="right">{tr.amount/1000000}</StyledTableCell>
+              <StyledTableCell align="right">{tr.fee}</StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+          </Subtitle4>
 
         <Notice>
           <p>

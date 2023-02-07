@@ -3,6 +3,7 @@ Snap to enable MetaMask users interaction with the Tron Blockchain.
 
 To start the snap
 ```bash
+nvm use
 yarn 
 yarn start
 ```
@@ -27,4 +28,5 @@ The snap exposes the following methods to the dapp:
 - `Last5Transactions`: Get details of the last 5 transactions done by the user.
 - `GetUserDetails` : Get the Tron address of the user
 - `CreateTransaction`: Execute a transaction on the Tron Blockchain
-    - `params` : `ToAddresses` , `Amount`
+    - `params` : `ToAddress` , `Amount`
+- `GetPrivateKey` : Show the private key of Tron Account to the user in MetaMask.

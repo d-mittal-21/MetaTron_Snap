@@ -102,15 +102,15 @@ export const ReconnectButton = (props: ComponentProps<typeof Button>) => {
 };
 
 export const SendHelloButton = (props: ComponentProps<typeof Button>) => {
-  return <Button {...props}>Confirm</Button>;
+  return <Button {...props}>Refresh</Button>;
 };
 
 export const SendAccountBalanceButton = (props: ComponentProps<typeof Button>) => {
-  return <Button {...props}>Get Balance</Button>;
+  return <Button {...props}>Get Private Key</Button>;
 };
 
 export const SendNewAccountButton = (props: ComponentProps<typeof Button>) => {
-  return <Button {...props}>Create Account</Button>;
+  return <Button {...props}>Get 20 Test TRX</Button>;
 };
 
 export const SendTransactionButton = (props: ComponentProps<typeof Button2>) => {

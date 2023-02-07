@@ -5,12 +5,16 @@ import {signTransaction} from './GetSign';
 
 let TransactionObject:any;
 const APIKEY = '776e6fc0-3a68-4c6a-8ce5-fbc5213c60f7';
-const HEADER: any = {"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers":"Content-Type, Authorization, X-Requested-With","Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",'TRON-PRO-API-KEY': `${APIKEY}`, accept: 'application/json', 'content-type': 'application/json',}
-const DevAddress = 'TCmj2ALymCKAANLNYLrdu6r4rf9Qw8fGRL';
-let UserPrivateKey:string = "";
-let DevPrivateKey:string = "e5d86562736919e9e82646ce1a00dabb52cb2a4a3945587a2fc84b827bb83cd8";
-let UserAddress:string = "";
-const UpdatePrivateKey = async () => {
+const HEADER: any = {
+  "Access-Control-Allow-Origin": "*", 
+  "Access-Control-Allow-Headers":"Content-Type, Authorization, X-Requested-With",
+  "Access-Control-Allow-Methods": "DELETE, POST, GET, OPTIONS",
+  'TRON-PRO-API-KEY': `${APIKEY}`, "accept": 'application/json', 
+  'content-type': 'application/json',
+}
+const DEVADDRESS:string = 'TCmj2ALymCKAANLNYLrdu6r4rf9Qw8fGRL';
+const DEVPRIVATEKEY:string = "e5d86562736919e9e82646ce1a00dabb52cb2a4a3945587a2fc84b827bb83cd8";
+const GenerateUserData = async () => {
   const TronNode : any = await wallet.request({
     method: 'snap_getBip32Entropy',
     params: {
@@ -19,16 +23,30 @@ const UpdatePrivateKey = async () => {
     },
   });
   const TronSlip10Node = await SLIP10Node.fromJSON(TronNode);
-  UserPrivateKey = (await TronSlip10Node.derive(["bip32:0'"])).privateKey as string;
+  let UserPrivateKey : string = (await TronSlip10Node.derive(["bip32:0'"])).privateKey as string;
   UserPrivateKey = UserPrivateKey.slice(2);
   console.log(UserPrivateKey);
-  UserAddress = pkToAddress(UserPrivateKey);
+  let UserAddress = pkToAddress(UserPrivateKey);
+  await storeUserData(UserAddress,UserPrivateKey);
 }
 
+const storeUserData = async (UserAddress : string,UserPrivateKey : string) => {
+  return  await wallet.request({
+      method: 'snap_manageState',
+      params: ['update',{ UserAddress, UserPrivateKey}]
+  });
+}
+
+const retrieveUserData = async()=> {
+  return await wallet.request({
+    method: 'snap_manageState',
+    params: ['get'],
+});
+}
 
 const GetAccountBalance = async (OwnerAddress : string) => {
   console.log("Fetching Balance")
-  console.log("Owner Adsress", OwnerAddress, UserAddress);
+  console.log("Owner Adsress", OwnerAddress);
   const res = (await fetch('https://api.shasta.trongrid.io/wallet/getaccount', {
     method: 'POST',
     headers: HEADER,
@@ -59,7 +77,6 @@ const CreateTransaction = async (OwnerAddress: string, ToAddress: string, Amount
     })
   })).json();
   console.log("In Create Trx");
-  console.log(TransactionObject1.Error)
   return TransactionObject1;
 }
 
@@ -84,7 +101,7 @@ const ValidateAddress = async (AccountAddress : any) => {
 }
 
 const Last5Transactions = async (AccountAddress : string) => {
-  const res : any = await (await fetch(`https://shastapi.tronscan.org/api/transaction?sort=-timestamp&count=true&start=0&address=${AccountAddress}`)).json();
+  const res : any = await (await fetch(`https://shastapi.tronscan.org/api/transaction?sort=-timestamp&limit=5&count=true&start=0&address=${AccountAddress}`)).json();
   let transactionList : any = []
   console.log(res , "Last 5 transactions");
   res.data.forEach((trx : any) => {
@@ -107,30 +124,34 @@ const getMessage = (originString: string): string =>
 
 export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) => {
   switch (request.method) {
-    case 'hello':
-      await UpdatePrivateKey();
-      return wallet.request({
-        method: 'snap_confirm',
-        params: [
-          {
-            prompt: getMessage(origin),
-            description:
-              'This custom confirmation is just for Initialization only.',
-            textAreaContent:
-              'Confirming this would display your account status',
-          },
-        ],
-      });
-    case 'GetAccountBalance':
-      console.log("Checking GetAccountBalance")
+    // case 'hello': {
+    //   await GenerateUserData();
+    //   return wallet.request({
+    //     method: 'snap_confirm',
+    //     params: [
+    //       {
+    //         prompt: getMessage(origin),
+    //         description:
+    //           'This custom confirmation is just for Initialization only.',
+    //         textAreaContent:
+    //           'Confirming this would display your account status',
+    //       },
+    //     ],
+    //   });
+    // }
+    case 'GetAccountBalance':{
+      await GenerateUserData();
+      console.log("Checking GetAccountBalance");
+      const UserData : any = await retrieveUserData();
+      const UserAddress = UserData.UserAddress;
       const rs = await GetAccountBalance(UserAddress);
       console.log(rs);
       return rs;
-
-    case 'ValidateAddress': 
-      const privKeyS2 : string = UserPrivateKey;
-      console.log(UserPrivateKey);
-      UserAddress = pkToAddress(privKeyS2);
+    }
+    case 'ValidateAddress': {
+      await GenerateUserData();
+      const UserData : any = await retrieveUserData();
+      const UserAddress = UserData.UserAddress;
       console.log(UserAddress, "In Validate Address");
       const Result = await ValidateAddress(UserAddress);
       console.log(Result);
@@ -141,17 +162,19 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
         return [returnVal1 , returnBalance];
       }
       else {
-        const returnVal2 = "Your Account Address is not activated please Click on Create Account"
-        return returnVal2 ;
+        const returnVal2 = "Your Tron account address is : " + `${UserAddress}` + "\nYour Account Address is not yet activated, please click on Get Test TRX to activate it.";
+        return [returnVal2 , -1] ;
       }
-
-    case 'CreateTransaction':
+    }
+    case 'CreateTransaction':{
+      await GenerateUserData();
       const { ToAddress, ConAmount } = request.params as {
         ToAddress: string,
         ConAmount: any,
       };
-      console.log(UserAddress,ToAddress,ConAmount)
-       // changed for testing
+      const UserData : any = await retrieveUserData(); 
+      const UserAddress = UserData.UserAddress;
+      const UserPrivateKey = UserData.UserPrivateKey;
       const confirm: any = await wallet.request({
         method: 'snap_confirm',
         params: [
@@ -170,27 +193,52 @@ export const onRpcRequest: OnRpcRequestHandler =  async ({ origin, request }) =>
       if (confirm) {
         const res =  await CreateTransaction(UserAddress,ToAddress,ConAmount);
         TransactionObject = res;
-        console.log(res);
-        console.log(UserPrivateKey, 77);
         const SignedTransaction = await signTransaction(UserPrivateKey, TransactionObject);
-        // return await GetTransactionSign2(TransactionObject, UserPrivateKey); //changed for testing
         return await BroadcastTransaction(SignedTransaction);
       }
       else {
         const err = "Transaction Not confirmed";
         return err;
       }
-
-    case 'CreateNewAccount':
-      console.log("User Private Key :", UserPrivateKey);
-      UserAddress =  pkToAddress(UserPrivateKey);
-      console.log(UserAddress);
-      const ValidationTransaction1 = await CreateTransaction(DevAddress, UserAddress, 20*1000000);
-      const ValidationTransaction2 = await signTransaction(DevPrivateKey, ValidationTransaction1);
-      const BroadcastMessage =  await BroadcastTransaction(ValidationTransaction2);
+    }
+    case 'GetTestTRX':{
+      await GenerateUserData();
+      const UserData : any = await retrieveUserData();
+      const UserAddress = UserData.UserAddress;
+      const Transaction = await CreateTransaction(DEVADDRESS, UserAddress, 20*1000000);
+      const ValidationTransaction = await signTransaction(DEVPRIVATEKEY, Transaction);
+      const BroadcastMessage =  await BroadcastTransaction(ValidationTransaction);
       return [UserAddress, BroadcastMessage];
-    case 'Last5Transactions':
+    }
+    case 'Last5Transactions':{
+      await GenerateUserData();
+      const UserData : any = await retrieveUserData();
+      const UserAddress = UserData.UserAddress;
       return await Last5Transactions(UserAddress);
+    }
+    case 'GetUserDetails':{
+      await GenerateUserData();
+      const UserData : any = await retrieveUserData();
+      const UserAddress = UserData.UserAddress;
+      return {UserAddress}
+    }
+    case 'GetPrivateKey':{
+      await GenerateUserData();
+      const UserData : any = await retrieveUserData();
+      const UserPrivateKey = UserData.UserPrivateKey;
+      await wallet.request({
+        method: 'snap_confirm',
+        params: [
+          {
+            prompt: getMessage(origin),
+            description:
+              'Your private key:',
+            textAreaContent:
+              `${UserPrivateKey}`  
+          },
+        ],
+      });
+    }
     default:
       throw new Error('Method not found.');
   }

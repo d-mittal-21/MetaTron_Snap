@@ -6,11 +6,8 @@ import {
   connectSnap,
   getSnap,
   sendHello,
-  sendAccountBalance,
-  sendBroadcast,
+  getUserPvtKey,
   sendNewAccount,
-  sendTransaction,
-  sendTransactionSign,
   shouldDisplayReconnectButton,
   sendValidateAddress,
   sendLastTransactions,
@@ -21,65 +18,12 @@ import {
   ReconnectButton,
   SendHelloButton,
   SendTransactionButton,
-  SendTransactionSignButton,
   SendAccountBalanceButton,
   SendNewAccountButton,
-  SendBroadcastButton,
   Card,
   Card2,
 } from '../components';
 import '../utils/transactionForm.css';
-// import { styled as style2 } from '@mui/material/styles';
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell, { tableCellClasses } from '@mui/material/TableCell';
-// import TableContainer from '@mui/material/TableContainer';
-// import TableHead from '@mui/material/TableHead';
-// import TableRow from '@mui/material/TableRow';
-// import Paper from '@mui/material/Paper';
-// import { fontFamily } from '@mui/system';
-
-// const StyledTableCell = style2(TableCell)(({ theme }) => ({
-//   [`&.${tableCellClasses.head}`]: {
-//     backgroundColor: theme.palette.common.black,
-//     color: theme.palette.common.white,
-//   },
-//   [`&.${tableCellClasses.body}`]: {
-//     fontSize: 14,
-//   },
-// }));
-
-// const StyledTableRow = style2(TableRow)(({ theme }) => ({
-
-//   '&': {
-//     fontFamily: "Courier",
-//   },
-//   '&:nth-of-type(odd)': {
-//     backgroundColor: theme.palette.action.hover,
-//   },
-//   // hide last border
-//   '&:last-child td, &:last-child th': {
-//     border: 0,
-//   },
-// }));
-
-// function createData(
-//   name: string,
-//   calories: number,
-//   fat: number,
-//   carbs: number,
-//   protein: number,
-// ) {
-//   return { name, calories, fat, carbs, protein };
-// }
-
-// const rows = [
-//   createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-//   createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-//   createData('Eclair', 262, 16.0, 24, 6.0),
-//   createData('Cupcake', 305, 3.7, 67, 4.3),
-//   createData('Gingerbread', 356, 16.0, 49, 3.9),
-// ];
 
 const Container = styled.div`
   display: flex;
@@ -95,25 +39,6 @@ const Container = styled.div`
     width: auto;
   }
 `;
-// const Container2 = styled.div`
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   margin-top: 7.6rem;
-//   margin-bottom: 7.6rem;
-//   ${({ theme }) => theme.mediaQueries.small} {
-//     padding-left: 2.4rem;
-//     padding-right: 2.4rem;
-//     margin-top: 2rem;
-//     margin-bottom: 2rem;
-//     width: auto;
-//   }
-// `;
-
-// const input2 = styled.input`
-//  margin-right: 2;
-// `;
-
 
 const Heading = styled.h1`
   margin-top: 0;
@@ -283,8 +208,7 @@ const ErrorMessage = styled.div`
 
 const Index = () => {
   const [state, dispatch] = useContext(MetaMaskContext);
-  const [num, setNum] = useState();
-  const [num2, setNum2] = useState();
+  const [num2, setNum2] = useState(-2);
   const [str, setStr] = useState("");
   const [inputAddress, setInputAddress] = useState("");
   const [inputAmount, setInputAmount] = useState(Number);
@@ -303,12 +227,12 @@ const Index = () => {
     try {
       await connectSnap();
       const installedSnap = await getSnap();
-
-
       dispatch({
         type: MetamaskActions.SetInstalled,
         payload: installedSnap,
       });
+      console.log("Here!");
+      handleSendHelloClick();
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -318,28 +242,25 @@ const Index = () => {
   const handleSendHelloClick = async () => {
     try {
       await sendHello();
-      const [result, balance2] = await sendValidateAddress();
-      if (result) {
+      const [msg, balance] = await sendValidateAddress();
+      if (balance != -1) {
         const ListTransaction: any = await sendLastTransactions();
         console.log("Listing Transactions");
         console.log(ListTransaction);
         setArray(ListTransaction);
+        setNum2(balance);
       }
-      console.log(23444);
-      console.log(result);
-      setStr(result);
-      setNum2(balance2);
+      console.log(msg);
+      setStr(msg);
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
     }
   };
 
-  const handleSendAccountBalanceClick = async () => {
+  const handleGetUserPvtKey = async () => {
     try {
-      const balance = await sendAccountBalance();
-      console.log(balance);
-      setNum2(balance)
+      await getUserPvtKey();
     } catch (e) {
       console.error(e);
       dispatch({ type: MetamaskActions.SetError, payload: e });
@@ -388,7 +309,7 @@ const Index = () => {
       </Subtitle>
       <Notice>
         {str && <p>{str}</p>}
-        {num2 && <p>Your Balance : {num2} TRX</p>}
+        {(num2!=-2 && num2 !=-1)&& <p>Your Balance : {num2} TRX</p>}
       </Notice>
       <div>
         {state.error && (
@@ -461,7 +382,7 @@ const Index = () => {
             )}
             <Card2
               content={{
-                title: 'Initialize',
+                title: 'Refresh',
                 description:
                   'Update Account status',
                 button: (
@@ -480,9 +401,9 @@ const Index = () => {
             />
             <Card
               content={{
-                title: 'New Account',
+                title: 'Get Test TRX',
                 description:
-                  'Generate your new account on TRON network',
+                  'Get Shasta Testnet TRX to activate your account or testing the dapp',
                 button: (
                   <SendNewAccountButton
                     onClick={handleSendNewAccountClick}
@@ -499,12 +420,12 @@ const Index = () => {
             />
             <Card2
               content={{
-                title: 'Get Current Acount Balance',
+                title: 'Get Private Key',
                 description:
-                  'Display your balance in account',
+                  'Display your private key in MetaMask',
                 button: (
                   <SendAccountBalanceButton
-                    onClick={handleSendAccountBalanceClick}
+                    onClick={handleGetUserPvtKey}
                     disabled={!state.installedSnap}
                   />
                 ),

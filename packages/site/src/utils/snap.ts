@@ -61,24 +61,24 @@ export const getSnap = async (version?: string): Promise<Snap | undefined> => {
  */
 
 export const sendHello = async () => {
-  await window.ethereum.request({
-    method: 'wallet_invokeSnap',
-    params: [
-      defaultSnapOrigin,
-      {
-        method: 'hello',
-      },
-    ],
-  });
-};
-
-export const sendAccountBalance : any = async () => {
   return await window.ethereum.request({
     method: 'wallet_invokeSnap',
     params: [
       defaultSnapOrigin,
       {
-        method: 'GetAccountBalance',
+        method: 'GetUserDetails',
+      },
+    ],
+  });
+};
+
+export const getUserPvtKey = async () => {
+  return await window.ethereum.request({
+    method: 'wallet_invokeSnap',
+    params: [
+      defaultSnapOrigin,
+      {
+        method: 'GetPrivateKey',
       },
     ],
   });
@@ -138,7 +138,7 @@ export const sendNewAccount = async () => {
     params: [
       defaultSnapOrigin,
       {
-        method: 'CreateNewAccount',
+        method: 'GetTestTRX',
       },
     ],
   });

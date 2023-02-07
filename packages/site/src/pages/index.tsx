@@ -401,9 +401,9 @@ const Index = () => {
             />
             <Card
               content={{
-                title: 'Get Test TRX',
+                title: 'Activate your Account',
                 description:
-                  'Get Shasta Testnet TRX to activate your account or testing the dapp',
+                  'Get Shasta Testnet TRX to activate your account',
                 button: (
                   <SendNewAccountButton
                     onClick={handleSendNewAccountClick}

@@ -256,34 +256,37 @@ const convertToString = (val : string | undefined) : string => {
   }
   return "Data Not Available";
 }
-export const onTransaction: OnTransactionHandler = async ({
-  transaction,
-  chainId,
-}) => {
-    const {to , gas, value } = transaction;
-    const data = await (await fetch("https://api.gopluslabs.io/api/v1/token_security/"+chainId+"?contract_addresses="+to)).json();
-    const security_data = data[to as string];
-    const holder_count = security_data.holder_count;
-    const is_proxy = convertToString(security_data.is_proxy);
-    const is_open_source = convertToString(security_data.is_open_source);
-    const selfdestruct = convertToString(security_data.selfdestruct);
-    const is_blacklisted = convertToString(security_data.is_blacklisted);
-    const is_mintable = convertToString(security_data.is_mintable);
-    const token_name = security_data.token_name;
-    const token_symbol = security_data.token_symbol;
-    const trust_list = convertToString(security_data.trust_list);
-    const is_true_token = convertToString(security_data.is_true_token);
-    const insights = {
-        "Holder Count": holder_count,
-        "Is Proxy": is_proxy,
-        "Is Open Source": is_open_source,
-        "Can Self-Destruct": selfdestruct,
-        "Is Blacklisted": is_blacklisted,
-        "Is Mintable": is_mintable,
-        "Token Name": token_name,
-        "Token Symbol": token_symbol,
-        "Trust List": trust_list,
-        "Is True Token": is_true_token,
-    };
-    return { insights };
-};
+// export const onTransaction: OnTransactionHandler = async ({
+//   transaction,
+//   chainId,
+// }) => {
+//     const {to , gas, value } = transaction;
+//     const data = await (await fetch("https://api.gopluslabs.io/api/v1/token_security/"+chainId+"?contract_addresses="+to)).json();
+//     const security_data = data[to as string];
+//     if (security_data  === undefined) {
+//       return {insights : "Data not found"}
+//     }
+//     const holder_count = security_data.holder_count;
+//     const is_proxy = convertToString(security_data.is_proxy);
+//     const is_open_source = convertToString(security_data.is_open_source);
+//     const selfdestruct = convertToString(security_data.selfdestruct);
+//     const is_blacklisted = convertToString(security_data.is_blacklisted);
+//     const is_mintable = convertToString(security_data.is_mintable);
+//     const token_name = security_data.token_name;
+//     const token_symbol = security_data.token_symbol;
+//     const trust_list = convertToString(security_data.trust_list);
+//     const is_true_token = convertToString(security_data.is_true_token);
+//     const insights = {
+//         "Holder Count": holder_count,
+//         "Is Proxy": is_proxy,
+//         "Is Open Source": is_open_source,
+//         "Can Self-Destruct": selfdestruct,
+//         "Is Blacklisted": is_blacklisted,
+//         "Is Mintable": is_mintable,
+//         "Token Name": token_name,
+//         "Token Symbol": token_symbol,
+//         "Trust List": trust_list,
+//         "Is True Token": is_true_token,
+//     };
+//     return { insights };
+// };

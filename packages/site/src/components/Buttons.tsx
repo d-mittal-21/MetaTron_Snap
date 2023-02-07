@@ -47,7 +47,7 @@ const Button2 = styled.button`
   align-self: flex-start;
   align-items: center;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 30px;
   ${({ theme }) => theme.mediaQueries.small} {
     width: 100%;
   }

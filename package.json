@@ -1,5 +1,5 @@
 {
-  "name": "@metamask/template-snap-monorepo",
+  "name": "MetaTron_Snap",
   "version": "0.1.0",
   "private": true,
   "description": "",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MetaMask/template-snap-monorepo.git"
+    "url": "git+https://github.com/d-mittal-21/MetaTron_Snap.git"
   },
   "license": "(MIT-0 OR Apache-2.0)",
   "author": "",

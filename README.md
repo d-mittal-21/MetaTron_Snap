@@ -8,7 +8,7 @@ Tron is not an EVM compatible network, hence, can't be added to MetaMask directl
 
 The snap fulfills the following objectives :
 - MetaMask users would be able to access Tron dApps without installing different wallets 
-- Users would be able to leverage the awesome functionalities of MetaMask while working in Tron ecosystem
+- Tron Developers would be able to leverage the awesome functionalities of MetaMask while working in Tron ecosystem
 
 ![image](https://user-images.githubusercontent.com/92073778/217269734-18fe4630-8748-444d-a77c-932e1ed86f76.png)
 ## Steps for running locally

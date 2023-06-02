@@ -3352,41 +3352,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/template-snap-monorepo@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@metamask/template-snap-monorepo@workspace:."
-  dependencies:
-    "@emotion/react": ^11.10.5
-    "@emotion/styled": ^11.10.5
-    "@metamask/eslint-config": ^10.0.0
-    "@metamask/eslint-config-jest": ^10.0.0
-    "@metamask/eslint-config-nodejs": ^10.0.0
-    "@metamask/eslint-config-typescript": ^10.0.0
-    "@metamask/key-tree": ^6.2.1
-    "@metamask/snaps-types": ^0.28.0
-    "@mui/material": ^5.11.7
-    "@typescript-eslint/eslint-plugin": ^5.33.0
-    "@typescript-eslint/parser": ^5.33.0
-    bs58: ^5.0.0
-    crypto-js: ^4.1.1
-    elliptic: ^6.5.4
-    eslint: ^8.21.0
-    eslint-config-prettier: ^8.1.0
-    eslint-plugin-import: ^2.26.0
-    eslint-plugin-jest: ^26.8.2
-    eslint-plugin-jsdoc: ^39.2.9
-    eslint-plugin-node: ^11.1.0
-    eslint-plugin-prettier: ^4.2.1
-    ethers: 5.4
-    prettier: ^2.2.1
-    prettier-plugin-packagejson: ^2.2.18
-    secp256k1: ^5.0.0
-    sha3: ^2.1.4
-    tronweb: ^5.1.0
-    typescript: ^4.7.4
-  languageName: unknown
-  linkType: soft
-
 "@metamask/types@npm:^1.1.0":
   version: 1.1.0
   resolution: "@metamask/types@npm:1.1.0"
@@ -5428,6 +5393,41 @@ __metadata:
   checksum: 2605fa124260c61bad38bb65eba30d2f72216a78e94d0ab19b11b4e0327d572b8d530c0c9cc3b0764f727ad26d39e00bf7ebad57781ca6368394d73169c59e46
   languageName: node
   linkType: hard
+
+"MetaTron_Snap@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "MetaTron_Snap@workspace:."
+  dependencies:
+    "@emotion/react": ^11.10.5
+    "@emotion/styled": ^11.10.5
+    "@metamask/eslint-config": ^10.0.0
+    "@metamask/eslint-config-jest": ^10.0.0
+    "@metamask/eslint-config-nodejs": ^10.0.0
+    "@metamask/eslint-config-typescript": ^10.0.0
+    "@metamask/key-tree": ^6.2.1
+    "@metamask/snaps-types": ^0.28.0
+    "@mui/material": ^5.11.7
+    "@typescript-eslint/eslint-plugin": ^5.33.0
+    "@typescript-eslint/parser": ^5.33.0
+    bs58: ^5.0.0
+    crypto-js: ^4.1.1
+    elliptic: ^6.5.4
+    eslint: ^8.21.0
+    eslint-config-prettier: ^8.1.0
+    eslint-plugin-import: ^2.26.0
+    eslint-plugin-jest: ^26.8.2
+    eslint-plugin-jsdoc: ^39.2.9
+    eslint-plugin-node: ^11.1.0
+    eslint-plugin-prettier: ^4.2.1
+    ethers: 5.4
+    prettier: ^2.2.1
+    prettier-plugin-packagejson: ^2.2.18
+    secp256k1: ^5.0.0
+    sha3: ^2.1.4
+    tronweb: ^5.1.0
+    typescript: ^4.7.4
+  languageName: unknown
+  linkType: soft
 
 "abbrev@npm:1, abbrev@npm:^1.0.0":
   version: 1.1.1
@@ -16251,12 +16251,12 @@ __metadata:
   linkType: hard
 
 "socket.io-parser@npm:~4.2.1":
-  version: 4.2.2
-  resolution: "socket.io-parser@npm:4.2.2"
+  version: 4.2.4
+  resolution: "socket.io-parser@npm:4.2.4"
   dependencies:
     "@socket.io/component-emitter": ~3.1.0
     debug: ~4.3.1
-  checksum: ba929645cb252e23d9800f00c77092480d07cc5d6c97a5d11f515ef636870ea5b3ad6f62b7ba6147b4d703efc92588064f5638a0a0841c8530e4ac50c4b1197a
+  checksum: 61540ef99af33e6a562b9effe0fad769bcb7ec6a301aba5a64b3a8bccb611a0abdbe25f469933ab80072582006a78ca136bf0ad8adff9c77c9953581285e2263
   languageName: node
   linkType: hard
 
